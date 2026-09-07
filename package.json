@@ -1,0 +1,31 @@
+{
+  "name": "json-to-dom-datalist",
+  "version": "1.0.0",
+  "description": "Standalone, config-driven HTML5 <datalist> autocomplete renderer built on top of json-to-dom",
+  "type": "module",
+  "main": "src/v1/index.js",
+  "files": [
+    "src",
+    "docs",
+    "README.md"
+  ],
+  "exports": {
+    ".": "./src/v1/index.js",
+    "./v1": "./src/v1/index.js"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "keywords": [
+    "json-to-dom",
+    "datalist",
+    "autocomplete",
+    "html5"
+  ],
+  "author": "KeshavSoft",
+  "license": "MIT",
+  "devDependencies": {
+    "vite": "^5.4.2"
+  }
+}
