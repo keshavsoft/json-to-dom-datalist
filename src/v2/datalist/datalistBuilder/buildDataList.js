@@ -1,6 +1,6 @@
 import { buildOptions } from "./parts/index.js";
 
-const buildDataList = ({ inData = [], inColumns = [], inTopN = 100 } = {}) => {
+const buildDataList = ({ inData = [], inColumns = [], inTopN = 0 } = {}) => {
     const localData = inData;
     const localColumns = inColumns;
     const localTopN = inTopN;

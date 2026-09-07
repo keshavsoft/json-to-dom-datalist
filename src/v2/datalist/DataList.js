@@ -1,5 +1,6 @@
 import { DataListStore } from "./datalistStore/index.js";
-import { renderDataList } from "./render/index.js";
+import { createMethods } from "./methods/index.js";
+import { createActions } from "./actions/index.js";
 
 class DataList {
     constructor({
@@ -7,43 +8,57 @@ class DataList {
         columns = [],
         config = {},
         dataProvider = null,
-        targetContainerId = "datalist-container"
+        targetContainerId = "datalist-container",
+        inData,
+        inColumns,
+        inConfig,
+        inDataProvider,
+        inTargetContainerId
     } = {}) {
-        const localData = data;
-        const localColumns = columns;
-        const localConfig = config;
-        const localDataProvider = dataProvider;
-        const localTargetContainerId = targetContainerId;
+        const localData = inData || data;
+        const localColumns = inColumns || columns;
+        const localConfig = inConfig || config;
+        const localDataProvider = inDataProvider || dataProvider;
+        const localTargetContainerId = inTargetContainerId || targetContainerId;
 
         this.containerId = localTargetContainerId;
         this.dataProvider = localDataProvider;
         this.element = null;
-        this.spec = null;
+        this.controlsTree = null;
 
         this.store = new DataListStore({
             inData: localData,
             inColumns: localColumns,
             inConfig: localConfig
         });
+
+        this.methods = createMethods({ inDataList: this });
+        this.actions = createActions({ inDataList: this });
+        this.spec = this.buildSpec();
     }
 
-    async load({ query = {} } = {}) {
-        const localQuery = query;
-        if (!this.dataProvider || typeof this.dataProvider.read !== "function") {
-            console.warn("[json-to-dom-renderers:DataList] DataList.load called without a valid dataProvider.read implementation");
-            return this.store.stateData;
-        }
+    buildSpec() {
+        return this.methods.buildSpec();
+    }
 
-        try {
-            const fetchedData = await this.dataProvider.read({ inQuery: localQuery });
-            const records = Array.isArray(fetchedData) ? fetchedData : (fetchedData?.data || []);
-            this.store.updateData({ inData: records });
-            this.render();
-            return records;
-        } catch (error) {
-            console.error("[json-to-dom-renderers:DataList] Failed to load records via dataProvider.read:", error);
-            return this.store.stateData;
-        }
+    renderStructure(args = {}) {
+        return this.methods.renderStructure(args);
+    }
+
+    async render(args = {}) {
+        return await this.methods.render(args);
+    }
+
+    async load(args = {}) {
+        return await this.actions.load(args);
+    }
+
+    update(args = {}) {
+        return this.actions.update(args);
+    }
+
+    getControlsTree() {
+        return this.controlsTree;
     }
 
     get data() {
@@ -56,16 +71,6 @@ class DataList {
 
     get config() {
         return this.store.config;
-    }
-
-    render() {
-        return renderDataList({ inDataList: this });
-    }
-
-    update({ data = [] } = {}) {
-        const localData = data;
-        this.store.updateData({ inData: localData });
-        return this.render();
     }
 }
 

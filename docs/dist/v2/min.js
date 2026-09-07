@@ -1,40 +1,40 @@
-const g = ({ inData: d = [], inColumns: a = [], inConfig: t = {}, inTopN: n } = {}) => {
-  const o = d, s = a, i = t, e = n;
+const y = ({ inData: c = [], inColumns: t = [], inConfig: e = {}, inTopN: s } = {}) => {
+  const n = c, a = t, o = e, r = s;
   return {
-    originalData: Array.isArray(o) ? typeof structuredClone == "function" ? structuredClone(o) : JSON.parse(JSON.stringify(o)) : [],
-    columns: Array.isArray(s) ? s : [],
-    config: i || {},
-    topN: e
+    originalData: Array.isArray(n) ? typeof structuredClone == "function" ? structuredClone(n) : JSON.parse(JSON.stringify(n)) : [],
+    columns: Array.isArray(a) ? a : [],
+    config: o || {},
+    topN: r
   };
-}, C = ({ inColumnsCatalog: d = [], inColumnKeys: a = [] } = {}) => {
-  const t = d, n = a;
-  if (Array.isArray(n) && n.length > 0) {
-    const o = new Map((Array.isArray(t) ? t : []).map((e) => [e.key, e])), s = [], i = [];
-    for (const e of n) {
-      const r = o.get(e);
-      r ? i.push(r) : s.push(e);
+}, A = ({ inColumnsCatalog: c = [], inColumnKeys: t = [] } = {}) => {
+  const e = c, s = t;
+  if (Array.isArray(s) && s.length > 0) {
+    const n = new Map((Array.isArray(e) ? e : []).map((r) => [r.key, r])), a = [], o = [];
+    for (const r of s) {
+      const i = n.get(r);
+      i ? o.push(i) : a.push(r);
     }
-    return s.length > 0 && console.warn(
-      `[json-to-dom-renderers] Warning: Config requested columns [${s.map((e) => `"${e}"`).join(", ")}] that do not exist in the columns catalog.`
-    ), i;
+    return a.length > 0 && console.warn(
+      `[json-to-dom-renderers] Warning: Config requested columns [${a.map((r) => `"${r}"`).join(", ")}] that do not exist in the columns catalog.`
+    ), o;
   }
-  return Array.isArray(t) ? t : [];
+  return Array.isArray(e) ? e : [];
 };
 class v {
-  constructor({ inData: a = [], inColumns: t = [], inConfig: n = {}, inTopN: o } = {}) {
-    const s = a, i = t, e = n, r = o;
-    this.source = g({
-      inData: s,
-      inColumns: i,
-      inConfig: e,
-      inTopN: r
+  constructor({ inData: t = [], inColumns: e = [], inConfig: s = {}, inTopN: n } = {}) {
+    const a = t, o = e, r = s, i = n;
+    this.source = y({
+      inData: a,
+      inColumns: o,
+      inConfig: r,
+      inTopN: i
     });
   }
-  _buildSource(a) {
-    return g(a);
+  _buildSource(t) {
+    return y(t);
   }
-  _resolveActiveColumns(a) {
-    return C(a);
+  _resolveActiveColumns(t) {
+    return A(t);
   }
   get rawData() {
     return this.source.originalData;
@@ -43,34 +43,34 @@ class v {
     return this.source.config;
   }
 }
-const b = ({ inData: d = [] } = {}) => {
-  const a = d;
-  return Array.isArray(a) ? typeof structuredClone == "function" ? structuredClone(a) : JSON.parse(JSON.stringify(a)) : [];
+const N = ({ inData: c = [] } = {}) => {
+  const t = c;
+  return Array.isArray(t) ? typeof structuredClone == "function" ? structuredClone(t) : JSON.parse(JSON.stringify(t)) : [];
 };
-class N extends v {
-  constructor({ inData: a = [], inColumns: t = [], inConfig: n = {}, inTopN: o = 100 } = {}) {
-    const s = a, i = t, e = n, r = o;
+class S extends v {
+  constructor({ inData: t = [], inColumns: e = [], inConfig: s = {}, inTopN: n = 0 } = {}) {
+    const a = t, o = e, r = s, i = n;
     super({
-      inData: s,
-      inColumns: i,
-      inConfig: e,
-      inTopN: r
+      inData: a,
+      inColumns: o,
+      inConfig: r,
+      inTopN: i
     }), this.library = this._buildLibrary({
       inSource: this.source
     });
   }
-  _buildLibrary({ inSource: a } = {}) {
-    var i, e, r, l, c;
-    const t = a, n = this._resolveActiveColumns({
-      inColumnsCatalog: t == null ? void 0 : t.columns,
-      inColumnKeys: ((e = (i = t == null ? void 0 : t.config) == null ? void 0 : i.datalist) == null ? void 0 : e.columns) || ((r = t == null ? void 0 : t.config) == null ? void 0 : r.columns)
-    }), o = b({
-      inData: t == null ? void 0 : t.originalData
-    }), s = ((c = (l = t == null ? void 0 : t.config) == null ? void 0 : l.datalist) == null ? void 0 : c.topN) ?? (t == null ? void 0 : t.topN) ?? 100;
+  _buildLibrary({ inSource: t } = {}) {
+    var o, r, i, l, u;
+    const e = t, s = this._resolveActiveColumns({
+      inColumnsCatalog: e == null ? void 0 : e.columns,
+      inColumnKeys: ((r = (o = e == null ? void 0 : e.config) == null ? void 0 : o.datalist) == null ? void 0 : r.columns) || ((i = e == null ? void 0 : e.config) == null ? void 0 : i.columns)
+    }), n = N({
+      inData: e == null ? void 0 : e.originalData
+    }), a = ((u = (l = e == null ? void 0 : e.config) == null ? void 0 : l.datalist) == null ? void 0 : u.topN) ?? (e == null ? void 0 : e.topN) ?? 0;
     return {
-      activeColumns: n,
-      stateData: o,
-      topN: s
+      activeColumns: s,
+      stateData: n,
+      topN: a
     };
   }
   get stateData() {
@@ -82,52 +82,52 @@ class N extends v {
   get topN() {
     return this.library.topN;
   }
-  updateData({ inData: a = [] } = {}) {
-    const t = a;
-    return this.library.stateData = Array.isArray(t) ? t : [], this.library.stateData;
+  updateData({ inData: t = [] } = {}) {
+    const e = t;
+    return this.library.stateData = Array.isArray(e) ? e : [], this.library.stateData;
   }
 }
-const h = ({ inData: d = [], inKey: a = "", inTopN: t = 100 } = {}) => {
-  const n = d, o = a, s = t;
-  if (!Array.isArray(n) || !o) return [];
-  const i = /* @__PURE__ */ new Map();
-  for (const l of n) {
+const w = ({ inData: c = [], inKey: t = "", inTopN: e = 0 } = {}) => {
+  const s = c, n = t, a = e;
+  if (!Array.isArray(s) || !n) return [];
+  const o = /* @__PURE__ */ new Map();
+  for (const l of s) {
     if (!l || typeof l != "object") continue;
-    const c = l[o];
-    if (c != null) {
-      const u = String(c).trim();
-      u !== "" && i.set(u, (i.get(u) || 0) + 1);
+    const u = l[n];
+    if (u != null) {
+      const d = String(u).trim();
+      d !== "" && o.set(d, (o.get(d) || 0) + 1);
     }
   }
-  const e = Array.from(i.entries()).map(([l, c]) => ({ value: l, count: c })).sort((l, c) => l.value.localeCompare(c.value, void 0, { sensitivity: "base", numeric: !0 }));
-  return (s > 0 && Number.isFinite(s) ? e.slice(0, s) : e).map(({ value: l, count: c }) => ({
+  const r = Array.from(o.entries()).map(([l, u]) => ({ value: l, count: u })).sort((l, u) => l.value.localeCompare(u.value, void 0, { sensitivity: "base", numeric: !0 }));
+  return (a > 0 && Number.isFinite(a) ? r.slice(0, a) : r).map(({ value: l, count: u }) => ({
     tagName: "option",
     attributes: {
       value: l,
-      label: `${l} (${c})`
+      label: `${l} (${u})`
     },
-    textContent: `${l} (${c})`
+    textContent: `${l} (${u})`
   }));
-}, A = ({ inData: d = [], inColumns: a = [], inTopN: t = 100 } = {}) => {
-  const n = d, o = a, s = t;
-  if (!Array.isArray(o) || o.length === 0)
+}, T = ({ inData: c = [], inColumns: t = [], inTopN: e = 0 } = {}) => {
+  const s = c, n = t, a = e;
+  if (!Array.isArray(n) || n.length === 0)
     return {
       tagName: "div",
       attributes: { id: "ks-datalists-wrapper" },
       children: []
     };
-  const i = o.map((e) => {
-    const r = e.key || "", l = e.datalistId || `${r}-datalist`, c = h({
-      inData: n,
-      inKey: r,
-      inTopN: s
+  const o = n.map((r) => {
+    const i = r.key || "", l = r.datalistId || `${i}-datalist`, u = w({
+      inData: s,
+      inKey: i,
+      inTopN: a
     });
     return {
       tagName: "datalist",
       attributes: {
         id: l
       },
-      children: c
+      children: u
     };
   });
   return {
@@ -135,75 +135,139 @@ const h = ({ inData: d = [], inKey: a = "", inTopN: t = 100 } = {}) => {
     attributes: {
       id: "ks-datalists-wrapper"
     },
-    children: i
+    children: o
   };
-}, w = ({ inDataList: d } = {}) => {
-  var i, e;
-  const a = d;
-  if (!a || typeof document > "u") return null;
-  let t = document.getElementById(a.containerId);
-  t || (console.warn(`[json-to-dom-renderers:DataList] Target container "#${a.containerId}" was not found in the DOM; auto-created and appended to document.body.`), t = document.createElement("div"), t.id = a.containerId, document.body.appendChild(t));
-  const n = A({
-    inData: a.store.stateData,
-    inColumns: a.store.activeColumns,
-    inTopN: a.store.topN
-  });
-  a.spec = n;
-  const o = (e = (i = window.ks) == null ? void 0 : i["json-to-dom"]) == null ? void 0 : e.buildSpecElement;
-  let s = null;
-  if (typeof o == "function") {
-    const r = o({ inSpec: n });
-    s = Array.isArray(r) ? r[0] : r;
+}, I = ({ inDataList: c } = {}) => {
+  const t = c;
+  return t != null && t.store ? T({
+    inData: t.store.stateData,
+    inColumns: t.store.activeColumns,
+    inTopN: t.store.topN
+  }) : null;
+}, m = ({ inSpec: c } = {}) => {
+  var i, l, u;
+  const t = c;
+  if (!t || typeof t != "object") return null;
+  if (Array.isArray(t)) {
+    const d = t.map((p) => m({ inSpec: p })).filter(Boolean);
+    return d.length > 0 ? d : null;
   }
-  if (!s || s.children.length === 0) {
-    const r = document.createElement("div");
-    r.id = "ks-datalists-wrapper";
-    for (const l of a.store.activeColumns) {
-      const c = l.key || "", u = l.datalistId || `${c}-datalist`, m = document.createElement("datalist");
-      m.id = u;
-      const D = h({
-        inData: a.store.stateData,
-        inKey: c,
-        inTopN: a.store.topN
-      });
-      for (const y of D) {
-        const p = document.createElement("option");
-        p.value = y.attributes.value, p.label = y.attributes.label, p.textContent = y.textContent, m.appendChild(p);
-      }
-      r.appendChild(m);
+  const s = (Array.isArray(t.children) ? t.children : []).map((d) => m({ inSpec: d })).filter(Boolean), n = ((i = t.attributes) == null ? void 0 : i.id) || t.id, a = !!n, o = s.length > 0;
+  if (!a && !o)
+    return null;
+  const r = {
+    tagName: t.tagName
+  };
+  return n && (r.id = n), (l = t.attributes) != null && l.name && (r.name = t.attributes.name), (u = t.attributes) != null && u.type && (r.type = t.attributes.type), t.attributes && (r.attributes = t.attributes), s.length > 0 && (r.children = s), r;
+}, h = ({ inSpec: c } = {}) => {
+  const t = c;
+  if (!t || typeof t != "object") return null;
+  const e = document.createElement(t.tagName || "div");
+  if (t.attributes && typeof t.attributes == "object")
+    for (const [s, n] of Object.entries(t.attributes))
+      n != null && e.setAttribute(s, String(n));
+  if (t.textContent !== void 0 && t.textContent !== null && (e.textContent = t.textContent), Array.isArray(t.children))
+    for (const s of t.children) {
+      const n = h({ inSpec: s });
+      n && e.appendChild(n);
     }
-    s = r;
+  return e;
+}, g = ({ inDataList: c, inContainerId: t, inContainer: e, targetContainerId: s } = {}) => {
+  const n = c, a = t || s || (n == null ? void 0 : n.containerId), r = e || (a ? document.getElementById(a) : null);
+  if (!r)
+    return console.warn(`[json-to-dom-datalist:renderStructure] Target container "${a}" not found.`), null;
+  const i = n.buildSpec(), { spec: l, treeWithIds: u } = m({ inSpec: i });
+  r.innerHTML = "";
+  const d = h({ inSpec: l });
+  return d && r.appendChild(d), { element: d, treeWithIds: u, spec: l };
+}, L = async ({ inDataList: c, inContainerId: t, inContainer: e, targetContainerId: s } = {}) => {
+  const n = c, a = t || s, o = e;
+  return n != null && n.dataProvider && (!n.store.stateData || n.store.stateData.length === 0) && await n.actions.load(), g({
+    inDataList: n,
+    inContainerId: a,
+    inContainer: o
+  });
+}, j = ({ inDataList: c } = {}) => {
+  const t = c;
+  return {
+    buildSpec: () => I({ inDataList: t }),
+    renderStructure: ({ inContainerId: a, inContainer: o, targetContainerId: r } = {}) => {
+      const i = g({
+        inDataList: t,
+        inContainerId: a,
+        inContainer: o,
+        targetContainerId: r
+      });
+      return i != null && i.element && (t.element = i.element, t.controlsTree = i.treeWithIds), i;
+    },
+    render: async ({ inContainerId: a, inContainer: o, targetContainerId: r } = {}) => {
+      const i = await L({
+        inDataList: t,
+        inContainerId: a,
+        inContainer: o,
+        targetContainerId: r
+      });
+      return i != null && i.element && (t.element = i.element, t.controlsTree = i.treeWithIds), i;
+    }
+  };
+}, k = async ({ inDataList: c, inQuery: t = {} } = {}) => {
+  var n, a;
+  const e = c, s = t;
+  if (!(e != null && e.dataProvider) || typeof e.dataProvider.read != "function")
+    return ((n = e == null ? void 0 : e.store) == null ? void 0 : n.stateData) || [];
+  try {
+    const o = await e.dataProvider.read({ inQuery: s }), r = Array.isArray(o) ? o : (o == null ? void 0 : o.data) || [];
+    return e.store.updateData({ inData: r }), e.renderStructure(), r;
+  } catch (o) {
+    return console.error("[json-to-dom-datalist:load] Failed to load records via dataProvider.read:", o), ((a = e == null ? void 0 : e.store) == null ? void 0 : a.stateData) || [];
   }
-  return a.element = s, t.innerHTML = "", a.element && t.appendChild(a.element), {
-    spec: a.spec,
-    element: a.element
+}, x = ({ inDataList: c, inData: t = [] } = {}) => {
+  const e = c, s = t;
+  return e.store.updateData({ inData: s }), e.renderStructure();
+}, $ = ({ inDataList: c } = {}) => {
+  const t = c;
+  return {
+    load: async ({ inQuery: n, query: a } = {}) => await k({ inDataList: t, inQuery: n ?? a ?? {} }),
+    update: ({ inData: n, data: a } = {}) => x({ inDataList: t, inData: n ?? a ?? [] })
   };
 };
 class f {
   constructor({
-    data: a = [],
-    columns: t = [],
-    config: n = {},
-    dataProvider: o = null,
-    targetContainerId: s = "datalist-container"
+    data: t = [],
+    columns: e = [],
+    config: s = {},
+    dataProvider: n = null,
+    targetContainerId: a = "datalist-container",
+    inData: o,
+    inColumns: r,
+    inConfig: i,
+    inDataProvider: l,
+    inTargetContainerId: u
   } = {}) {
-    const i = a, e = t, r = n, l = o, c = s;
-    this.containerId = c, this.dataProvider = l, this.element = null, this.spec = null, this.store = new N({
-      inData: i,
-      inColumns: e,
-      inConfig: r
-    });
+    const d = o || t, p = r || e, C = i || s, D = l || n, b = u || a;
+    this.containerId = b, this.dataProvider = D, this.element = null, this.controlsTree = null, this.store = new S({
+      inData: d,
+      inColumns: p,
+      inConfig: C
+    }), this.methods = j({ inDataList: this }), this.actions = $({ inDataList: this }), this.spec = this.buildSpec();
   }
-  async load({ query: a = {} } = {}) {
-    const t = a;
-    if (!this.dataProvider || typeof this.dataProvider.read != "function")
-      return console.warn("[json-to-dom-renderers:DataList] DataList.load called without a valid dataProvider.read implementation"), this.store.stateData;
-    try {
-      const n = await this.dataProvider.read({ inQuery: t }), o = Array.isArray(n) ? n : (n == null ? void 0 : n.data) || [];
-      return this.store.updateData({ inData: o }), this.render(), o;
-    } catch (n) {
-      return console.error("[json-to-dom-renderers:DataList] Failed to load records via dataProvider.read:", n), this.store.stateData;
-    }
+  buildSpec() {
+    return this.methods.buildSpec();
+  }
+  renderStructure(t = {}) {
+    return this.methods.renderStructure(t);
+  }
+  async render(t = {}) {
+    return await this.methods.render(t);
+  }
+  async load(t = {}) {
+    return await this.actions.load(t);
+  }
+  update(t = {}) {
+    return this.actions.update(t);
+  }
+  getControlsTree() {
+    return this.controlsTree;
   }
   get data() {
     return this.store.stateData;
@@ -214,24 +278,17 @@ class f {
   get config() {
     return this.store.config;
   }
-  render() {
-    return w({ inDataList: this });
-  }
-  update({ data: a = [] } = {}) {
-    const t = a;
-    return this.store.updateData({ inData: t }), this.render();
-  }
 }
 f.layouts = [];
 f.themes = [];
-const L = "v2.0.0";
+const P = "v2.0.0";
 window.ks ?? (window.ks = {});
 window.ks["json-to-dom-datalist"] = {
-  version: L,
+  version: P,
   DataList: f
 };
 export {
   f as DataList,
   f as default,
-  L as version
+  P as version
 };

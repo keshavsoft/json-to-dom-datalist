@@ -2,7 +2,7 @@ import { SourceStore } from "../../common/SourceStore.js";
 import { cloneData } from "../../common/cloneData.js";
 
 class DataListStore extends SourceStore {
-    constructor({ inData = [], inColumns = [], inConfig = {}, inTopN = 100 } = {}) {
+    constructor({ inData = [], inColumns = [], inConfig = {}, inTopN = 0 } = {}) {
         const localData = inData;
         const localColumns = inColumns;
         const localConfig = inConfig;
@@ -32,7 +32,7 @@ class DataListStore extends SourceStore {
             inData: localSource?.originalData
         });
 
-        const topN = localSource?.config?.datalist?.topN ?? localSource?.topN ?? 100;
+        const topN = localSource?.config?.datalist?.topN ?? localSource?.topN ?? 0;
 
         return {
             activeColumns,

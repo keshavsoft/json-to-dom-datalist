@@ -1,4 +1,4 @@
-const buildOptions = ({ inData = [], inKey = "", inTopN = 100 } = {}) => {
+const buildOptions = ({ inData = [], inKey = "", inTopN = 0 } = {}) => {
     const localData = inData;
     const localKey = inKey;
     const localTopN = inTopN;
