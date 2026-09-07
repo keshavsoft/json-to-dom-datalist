@@ -1,32 +1,16 @@
-const buildOptions = ({ inData = [], inKey = "", inTopN = 0 } = {}) => {
+import { groupBy } from "../../../common/index.js";
+
+const buildOptions = ({ inData = [], inKey = "", inTopN = 0, inGroupedData } = {}) => {
     const localData = inData;
     const localKey = inKey;
     const localTopN = inTopN;
+    const localGroupedData = inGroupedData;
 
-    if (!Array.isArray(localData) || !localKey) return [];
+    const groupedItems = Array.isArray(localGroupedData)
+        ? localGroupedData
+        : groupBy({ inData: localData, inKey: localKey, inTopN: localTopN });
 
-    const countsMap = new Map();
-
-    for (const row of localData) {
-        if (!row || typeof row !== "object") continue;
-        const val = row[localKey];
-        if (val !== undefined && val !== null) {
-            const strVal = String(val).trim();
-            if (strVal !== "") {
-                countsMap.set(strVal, (countsMap.get(strVal) || 0) + 1);
-            }
-        }
-    }
-
-    const sorted = Array.from(countsMap.entries())
-        .map(([value, count]) => ({ value, count }))
-        .sort((a, b) => a.value.localeCompare(b.value, undefined, { sensitivity: "base", numeric: true }));
-
-    const limited = (localTopN > 0 && Number.isFinite(localTopN))
-        ? sorted.slice(0, localTopN)
-        : sorted;
-
-    return limited.map(({ value, count }) => ({
+    return groupedItems.map(({ value, count }) => ({
         tagName: "option",
         attributes: {
             value: value,

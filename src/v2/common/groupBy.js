@@ -1,9 +1,11 @@
-const buildOptions = ({ inData = [], inKey = "", inTopN = 100 } = {}) => {
+const groupBy = ({ inData = [], inKey = "", inTopN = 0 } = {}) => {
     const localData = inData;
     const localKey = inKey;
     const localTopN = inTopN;
 
-    if (!Array.isArray(localData) || !localKey) return [];
+    if (!Array.isArray(localData) || !localKey) {
+        return [];
+    }
 
     const countsMap = new Map();
 
@@ -22,19 +24,12 @@ const buildOptions = ({ inData = [], inKey = "", inTopN = 100 } = {}) => {
         .map(([value, count]) => ({ value, count }))
         .sort((a, b) => a.value.localeCompare(b.value, undefined, { sensitivity: "base", numeric: true }));
 
-    const limited = (localTopN > 0 && Number.isFinite(localTopN))
-        ? sorted.slice(0, localTopN)
-        : sorted;
+    if (localTopN > 0 && Number.isFinite(localTopN)) {
+        return sorted.slice(0, localTopN);
+    }
 
-    return limited.map(({ value, count }) => ({
-        tagName: "option",
-        attributes: {
-            value: value,
-            label: ${value} ()
-        },
-        textContent: ${value} ()
-    }));
+    return sorted;
 };
 
-export { buildOptions };
-export default buildOptions;
+export { groupBy };
+export default groupBy;

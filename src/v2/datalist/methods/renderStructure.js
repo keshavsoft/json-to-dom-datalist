@@ -30,28 +30,74 @@ const renderNode = ({ inSpec } = {}) => {
     return element;
 };
 
-const renderStructure = ({ inDataList, inContainerId, inContainer, targetContainerId } = {}) => {
+// Story Step 1: Resolve and validate target mount container
+const resolveContainer = ({ inDataList, inContainerId, inContainer, targetContainerId } = {}) => {
     const localDataList = inDataList;
-    const localContainerId = inContainerId || targetContainerId || localDataList?.containerId;
     const localContainer = inContainer;
+    const localContainerId = inContainerId || targetContainerId || localDataList?.containerId;
 
-    const container = localContainer || (localContainerId ? document.getElementById(localContainerId) : null);
-    if (!container) {
-        console.warn(`[json-to-dom-datalist:renderStructure] Target container "${localContainerId}" not found.`);
-        return null;
+    if (localContainer instanceof HTMLElement) {
+        return localContainer;
     }
 
-    const rawSpec = localDataList.buildSpec();
-    const { spec: stampedSpec, treeWithIds } = pruneTreeWithIds({ inSpec: rawSpec });
-
-    container.innerHTML = "";
-    const element = renderNode({ inSpec: stampedSpec });
-    if (element) {
-        container.appendChild(element);
+    if (localContainerId && typeof document !== "undefined") {
+        return document.getElementById(localContainerId);
     }
 
-    return { element, treeWithIds, spec: stampedSpec };
+    return null;
 };
 
-export { renderStructure, renderNode };
+// Story Step 2: Clear and mount DOM element safely to container
+const mountToContainer = ({ inContainer, inElement } = {}) => {
+    const localContainer = inContainer;
+    const localElement = inElement;
+
+    if (!localContainer || !localElement) return;
+
+    localContainer.innerHTML = "";
+    localContainer.appendChild(localElement);
+};
+
+// Main Orchestration Story
+const renderStructure = ({ inDataList, inContainerId, inContainer, targetContainerId } = {}) => {
+    const localDataList = inDataList;
+    const localContainerId = inContainerId;
+    const localContainer = inContainer;
+    const localTargetContainerId = targetContainerId;
+
+    // 1. Resolve target container
+    const container = resolveContainer({
+        inDataList: localDataList,
+        inContainerId: localContainerId,
+        inContainer: localContainer,
+        targetContainerId: localTargetContainerId
+    });
+
+    if (!container) {
+        if (localDataList?.config?.debug) {
+            console.warn(`[json-to-dom-datalist:renderStructure] Target container "${localContainerId || localTargetContainerId || localDataList?.containerId}" not found.`);
+        }
+        return { element: null, treeWithIds: null, spec: null, error: "Container not found" };
+    }
+
+    // 2. Build JSON DOM specification and extract control tree
+    const rawSpec = localDataList.buildSpec();
+    const treeWithIds = pruneTreeWithIds({ inSpec: rawSpec });
+
+    // 3. Render DOM element from spec and mount to container
+    const element = renderNode({ inSpec: rawSpec });
+    mountToContainer({ inContainer: container, inElement: element });
+
+    localDataList.element = element;
+    localDataList.controlsTree = treeWithIds;
+
+    // 4. Return execution result
+    return {
+        element,
+        treeWithIds,
+        spec: rawSpec
+    };
+};
+
+export { renderStructure, renderNode, resolveContainer, mountToContainer };
 export default renderStructure;

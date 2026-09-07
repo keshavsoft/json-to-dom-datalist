@@ -1,6 +1,7 @@
 import { DataListStore } from "./datalistStore/index.js";
 import { createMethods } from "./methods/index.js";
 import { createActions } from "./actions/index.js";
+import { groupBy } from "../common/index.js";
 
 class DataList {
     constructor({
@@ -57,6 +58,17 @@ class DataList {
         return this.actions.update(args);
     }
 
+    getGroupedData({ inKey = "", inTopN } = {}) {
+        const localKey = inKey;
+        const localTopN = inTopN ?? this.store.topN ?? 0;
+
+        return groupBy({
+            inData: this.store.stateData,
+            inKey: localKey,
+            inTopN: localTopN
+        });
+    }
+
     getControlsTree() {
         return this.controlsTree;
     }
@@ -74,6 +86,7 @@ class DataList {
     }
 }
 
+DataList.groupBy = groupBy;
 DataList.layouts = [];
 DataList.themes = [];
 
