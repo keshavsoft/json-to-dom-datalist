@@ -1,6 +1,6 @@
 {
   "name": "json-to-dom-datalist",
-  "version": "1.0.0",
+  "version": "1.2.1",
   "description": "Standalone, config-driven HTML5 <datalist> autocomplete renderer built on top of json-to-dom",
   "type": "module",
   "main": "src/v1/index.js",
