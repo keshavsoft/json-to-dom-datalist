@@ -6,7 +6,7 @@ import { buildWrapper } from "./parts/buildWrapper.js";
 const buildDataList = ({ inData = [], inColumns = [], inTopN = 0 } = {}) => {
     if (!hasColumns({ inColumns })) {
         return buildEmptyWrapper();
-    }
+    };
 
     const children = buildDataLists({
         inData,

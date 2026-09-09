@@ -1,6 +1,6 @@
 import { DataList } from "./datalist/index.js";
 
-const version = "v5.0.0";
+const version = "v6.0.0";
 
 if (typeof globalThis !== "undefined") {
     globalThis.ks ??= {};

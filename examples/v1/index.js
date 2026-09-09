@@ -9,6 +9,8 @@ const dataList = new DataList({
     targetContainerId: "datalist-container"
 });
 
-await dataList.render();
+await dataList.render({
+    targetContainerId: "datalist-container"
+});
 
 console.log("dataList :", dataList);

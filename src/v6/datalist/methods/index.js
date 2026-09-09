@@ -14,12 +14,14 @@ const createMethods = ({ inDataList } = {}) => {
     };
 
     const localRenderStructure = ({ inContainerId, inContainer, targetContainerId } = {}) => {
-        return renderStructure({
+        const returnObject = renderStructure({
             inDataList: localDataList,
             inContainerId,
             inContainer,
             targetContainerId
         });
+
+        return returnObject;
     };
 
     return {

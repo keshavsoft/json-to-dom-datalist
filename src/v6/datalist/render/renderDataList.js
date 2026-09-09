@@ -28,11 +28,11 @@ const renderNode = ({ inSpec } = {}) => {
                 element.setAttribute(key, String(value));
             }
         }
-    }
+    };
 
     if (localSpec.textContent !== undefined && localSpec.textContent !== null) {
         element.textContent = localSpec.textContent;
-    }
+    };
 
     if (Array.isArray(localSpec.children)) {
         for (const childSpec of localSpec.children) {

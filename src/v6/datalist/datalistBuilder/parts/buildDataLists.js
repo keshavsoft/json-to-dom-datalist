@@ -1,24 +1,24 @@
 import { buildOptions } from "./buildOptions.js";
 
 const buildDataLists = ({
-    inData = [],
+    inData = {},
     inColumns = [],
     inTopN = 0
 } = {}) => {
     return inColumns.map(col => {
-        const key = col.key || "";
-        const datalistId = col.datalistId || `${key}-datalist`;
+        const key = typeof col === "string" ? col : col?.key || "";
+        const datalistId = `${key}-datalist`;
+        const children = buildOptions({
+            inKey: key,
+            inTopN,
+            inGroupedData: inData[key]
+        });
+        console.log("children : ", children);
 
         return {
             tagName: "datalist",
-            attributes: {
-                id: datalistId
-            },
-            children: buildOptions({
-                inData,
-                inKey: key,
-                inTopN
-            })
+            attributes: { id: datalistId },
+            children
         };
     });
 };

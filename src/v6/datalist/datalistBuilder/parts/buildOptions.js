@@ -1,19 +1,14 @@
-import { groupBy } from "../../../common/index.js";
+const buildOptions = ({ inGroupedData = [] } = {}) => {
+    const counts = new Map();
 
-const buildOptions = ({ inData = [], inKey = "", inTopN = 0, inGroupedData } = {}) => {
-    const localData = inData;
-    const localKey = inKey;
-    const localTopN = inTopN;
-    const localGroupedData = inGroupedData;
+    for (const value of inGroupedData) {
+        counts.set(value, (counts.get(value) || 0) + 1);
+    }
 
-    const groupedItems = Array.isArray(localGroupedData)
-        ? localGroupedData
-        : groupBy({ inData: localData, inKey: localKey, inTopN: localTopN });
-
-    return groupedItems.map(({ value, count }) => ({
+    return [...counts].map(([value, count]) => ({
         tagName: "option",
         attributes: {
-            value: value,
+            value,
             label: `${value} (${count})`
         },
         textContent: `${value} (${count})`
