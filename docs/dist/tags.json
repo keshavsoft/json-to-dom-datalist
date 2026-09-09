@@ -1,0 +1,143 @@
+{
+    "div": {
+        "allowsTextContent": false,
+        "allowsChildren": true,
+        "allowedAttributes": [
+            "title",
+            "role"
+        ],
+        "childTags": []
+    },
+    "input": {
+        "allowsTextContent": false,
+        "allowsChildren": false,
+        "allowedAttributes": [
+            "type",
+            "placeholder",
+            "value",
+            "name",
+            "disabled",
+            "readonly",
+            "required",
+            "list"
+        ]
+    },
+    "checkbox": {
+        "allowsTextContent": false,
+        "allowsChildren": false,
+        "allowedAttributes": [
+            "type",
+            "checked",
+            "name",
+            "value",
+            "disabled",
+            "required"
+        ]
+    },
+    "label": {
+        "allowsTextContent": true,
+        "allowsChildren": true,
+        "allowedAttributes": [
+            "for"
+        ],
+        "childTags": []
+    },
+    "button": {
+        "allowsTextContent": true,
+        "allowsChildren": true,
+        "allowedAttributes": [
+            "type",
+            "disabled",
+            "name",
+            "value"
+        ],
+        "childTags": []
+    },
+    "table": {
+        "allowsTextContent": false,
+        "allowsChildren": true,
+        "allowedAttributes": [
+            "border",
+            "cellpadding",
+            "cellspacing"
+        ],
+        "childTags": [
+            "caption",
+            "colgroup",
+            "thead",
+            "tbody",
+            "tfoot",
+            "tr"
+        ]
+    },
+    "thead": {
+        "allowsTextContent": false,
+        "allowsChildren": true,
+        "allowedAttributes": [],
+        "childTags": [
+            "tr"
+        ]
+    },
+    "tbody": {
+        "allowsTextContent": false,
+        "allowsChildren": true,
+        "allowedAttributes": [],
+        "childTags": [
+            "tr"
+        ]
+    },
+    "tfoot": {
+        "allowsTextContent": false,
+        "allowsChildren": true,
+        "allowedAttributes": [],
+        "childTags": [
+            "tr"
+        ]
+    },
+    "tr": {
+        "allowsTextContent": false,
+        "allowsChildren": true,
+        "allowedAttributes": [],
+        "childTags": [
+            "td",
+            "th"
+        ]
+    },
+    "th": {
+        "allowsTextContent": true,
+        "allowsChildren": true,
+        "allowedAttributes": [
+            "scope",
+            "colspan",
+            "rowspan"
+        ],
+        "childTags": []
+    },
+    "td": {
+        "allowsTextContent": true,
+        "allowsChildren": true,
+        "allowedAttributes": [
+            "colspan",
+            "rowspan"
+        ],
+        "childTags": []
+    },
+    "datalist": {
+        "allowsTextContent": false,
+        "allowsChildren": true,
+        "allowedAttributes": [],
+        "childTags": [
+            "option"
+        ]
+    },
+    "option": {
+        "allowsTextContent": true,
+        "allowsChildren": false,
+        "allowedAttributes": [
+            "value",
+            "label",
+            "selected",
+            "disabled"
+        ]
+    }
+}
