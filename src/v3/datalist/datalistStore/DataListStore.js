@@ -28,9 +28,15 @@ class DataListStore extends SourceStore {
             inColumnKeys: localSource?.config?.datalist?.columns || localSource?.config?.columns
         });
 
-        const stateData = cloneData({
+        const clonedData = cloneData({
             inData: localSource?.originalData
         });
+
+        const stateData = clonedData.map(row =>
+            Object.fromEntries(
+                activeColumns.map(({ key }) => [key, row[key]])
+            )
+        );
 
         const topN = localSource?.config?.datalist?.topN ?? localSource?.topN ?? 0;
 
