@@ -36,7 +36,7 @@ const resolveContainer = ({ inDataList, inContainerId, inContainer, targetContai
     const localContainer = inContainer;
     const localContainerId = inContainerId || targetContainerId || localDataList?.containerId;
 
-    if (localContainer instanceof HTMLElement) {
+    if (typeof HTMLElement !== "undefined" && localContainer instanceof HTMLElement) {
         return localContainer;
     }
 

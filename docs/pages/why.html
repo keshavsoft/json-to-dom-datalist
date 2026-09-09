@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Why Native Datalist | json-to-dom-datalist</title>
+  <link rel="stylesheet" href="../site.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a href="../index.html" class="brand" style="text-decoration: none; color: inherit;">
+        <span class="brand-mark">D</span>
+        <span>json-to-dom-datalist</span>
+      </a>
+      <nav class="nav" aria-label="Main navigation">
+        <a href="./overview.html">Overview</a>
+        <a class="active" href="./why.html">Why</a>
+        <a href="./how-it-works.html">How it works</a>
+        <a href="./architecture.html">Architecture</a>
+        <a href="./versions.html">Versions</a>
+        <a href="./tasks.html">Tasks</a>
+        <a href="../index.html">Playground</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container hero">
+    <section class="hero-card">
+      <div class="hero-header">
+        <span class="kicker">Core philosophy</span>
+        <h1>Why Native HTML5 &lt;datalist&gt; Over Heavy UI Dropdowns?</h1>
+        <p>
+          Custom autocomplete dropdown libraries add hundreds of kilobytes of code, z-index headaches, and brittle accessibility hacks. Native <code>&lt;datalist&gt;</code> provides a faster, lighter, and more resilient alternative.
+        </p>
+      </div>
+      <div class="hero-body">
+        <div class="grid">
+          <article class="card col-6">
+            <h2>The Custom Dropdown Problem</h2>
+            <ul class="checks">
+              <li><strong>Bloated bundles:</strong> 50KB to 200KB of external JS and CSS per component.</li>
+              <li><strong>Z-Index collisions:</strong> Dropdowns clipping inside modals or overflowing parent containers.</li>
+              <li><strong>Mobile keyboard bugs:</strong> Custom floating lists covered by virtual keyboards on iOS and Android.</li>
+              <li><strong>Accessibility complexity:</strong> Manual implementation of ARIA live regions and keyboard navigation.</li>
+            </ul>
+          </article>
+
+          <article class="card col-6">
+            <h2>The Native Datalist Solution</h2>
+            <ul class="checks">
+              <li><strong>Zero bundle overhead:</strong> Uses built-in browser autocomplete rendering.</li>
+              <li><strong>System OS integration:</strong> Integrates directly with native mobile keyboards and search trays.</li>
+              <li><strong>Clean separation:</strong> The datalist lives in an invisible container; inputs simply link via <code>list="id"</code>.</li>
+              <li><strong>Frequency counters:</strong> Shows users how many times an option appears (e.g. <code>ROPE (3)</code>).</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    json-to-dom-datalist &bull; KeshavSoft Declarative UI Architecture &bull; MIT License
+  </footer>
+</body>
+</html>

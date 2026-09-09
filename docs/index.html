@@ -4,125 +4,285 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>json-to-dom-datalist | Standalone Demo</title>
+    <title>json-to-dom-datalist | Interactive Playground &amp; Docs Hub</title>
     <!-- Fonts & Bootstrap 5 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: #f8fafc;
-            color: #0f172a;
+            background-color: #07141f;
+            color: #e5eef7;
             margin: 0;
+            min-height: 100vh;
         }
 
         .top-nav {
-            height: 44px;
-            background: #ffffff;
-            border-bottom: 1px solid #e2e8f0;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 1rem;
+            background: rgba(6, 19, 29, 0.85);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .brand-mark {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, #5cc8ff, #7ae7b7);
+            color: #02151d;
+            font-weight: 900;
+            font-size: 14px;
+        }
+
+        .nav-link-custom {
+            color: #a5b7c7;
+            text-decoration: none;
+            padding: 6px 14px;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            transition: 0.2s ease;
+        }
+
+        .nav-link-custom:hover,
+        .nav-link-custom.active {
+            background: rgba(92, 200, 255, 0.12);
+            color: #7dd3fc;
+        }
+
+        .hero-banner {
+            background: radial-gradient(circle at 50% 0%, rgba(92, 200, 255, 0.15), transparent 70%),
+                        linear-gradient(180deg, #07141f 0%, #0c1c2b 100%);
+            border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+            padding: 48px 0 36px;
         }
 
         .panel-box {
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 0.5rem;
-            padding: 1rem;
+            background: rgba(14, 28, 39, 0.85);
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            border-radius: 14px;
+            padding: 24px;
+            box-shadow: 0 18px 45px rgba(2, 6, 23, 0.35);
         }
 
         .dom-inspector {
-            background: #0f172a;
-            color: #38bdf8;
-            border-radius: 0.5rem;
-            padding: 0.75rem 1rem;
+            background: #040d14;
+            color: #7dd3fc;
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            border-radius: 14px;
+            padding: 20px;
             font-size: 0.8rem;
-            height: 380px;
+            height: 480px;
             overflow-y: auto;
-            font-family: monospace;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .form-control-custom {
+            background: #091a27;
+            border: 1px solid rgba(148, 163, 184, 0.25);
+            color: #fff;
+            border-radius: 8px;
+            padding: 10px 14px;
+        }
+
+        .form-control-custom:focus {
+            background: #0c2030;
+            border-color: #5cc8ff;
+            color: #fff;
+            box-shadow: 0 0 0 0.2rem rgba(92, 200, 255, 0.25);
+        }
+
+        .btn-action {
+            background: rgba(92, 200, 255, 0.15);
+            color: #7dd3fc;
+            border: 1px solid rgba(92, 200, 255, 0.3);
+            border-radius: 8px;
+            padding: 6px 14px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            transition: 0.2s ease;
+        }
+
+        .btn-action:hover {
+            background: #5cc8ff;
+            color: #02151d;
+        }
+
+        .gateway-card {
+            background: rgba(14, 28, 39, 0.7);
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            border-radius: 14px;
+            padding: 20px;
+            text-decoration: none;
+            color: inherit;
+            transition: 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .gateway-card:hover {
+            border-color: #5cc8ff;
+            background: rgba(14, 28, 39, 0.95);
+            transform: translateY(-2px);
+            color: inherit;
         }
     </style>
 </head>
 
 <body>
 
-    <header class="top-nav">
-        <div class="d-flex align-items-center gap-2">
-            <span class="fw-bold text-dark small">json-to-dom-datalist</span>
-            <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-0.5 font-monospace" style="font-size: 11px;">Standalone</span>
+    <!-- Top Navigation Bar -->
+    <header class="top-nav py-2 px-3 px-md-4">
+        <div class="container-fluid d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div class="d-flex align-items-center gap-2">
+                <span class="brand-mark">D</span>
+                <span class="fw-bold text-white fs-6">json-to-dom-datalist</span>
+                <span class="badge rounded-pill bg-info-subtle text-info border border-info-subtle ms-2 font-monospace" style="font-size: 11px;">src's Highest: v2</span>
+            </div>
+            <nav class="d-flex align-items-center gap-1 flex-wrap">
+                <a href="pages/overview.html" class="nav-link-custom">Overview</a>
+                <a href="pages/why.html" class="nav-link-custom">Why</a>
+                <a href="pages/how-it-works.html" class="nav-link-custom">How it works</a>
+                <a href="pages/architecture.html" class="nav-link-custom">Architecture</a>
+                <a href="pages/versions.html" class="nav-link-custom">Versions</a>
+                <a href="pages/tasks.html" class="nav-link-custom">Tasks</a>
+                <a href="index.html" class="nav-link-custom active">Playground</a>
+            </nav>
         </div>
-        <a href="../../json-to-dom-renderers/docs/index.html" class="btn btn-sm btn-outline-secondary py-1 px-2.5 d-flex align-items-center gap-1" style="font-size: 12px;">
-            <i class="bi bi-arrow-left"></i> Home
-        </a>
     </header>
 
-    <main class="container-fluid px-3 py-2">
-        <div class="row g-2">
+    <!-- Hero Header -->
+    <section class="hero-banner text-center px-3">
+        <div class="container">
+            <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill mb-3" style="background: rgba(92, 200, 255, 0.1); border: 1px solid rgba(92, 200, 255, 0.25); color: #7dd3fc; font-size: 0.78rem; font-weight: 600;">
+                <span>⚡ Zero Dependencies</span>
+                <span>•</span>
+                <span>HTML5 &lt;datalist&gt; Autocomplete</span>
+                <span>•</span>
+                <span>Distinct Frequency Aggregation</span>
+            </div>
+            <h1 class="text-white fw-bold display-6 mb-2">Declarative Native Datalist Generator</h1>
+            <p class="text-muted max-w-2xl mx-auto mb-0" style="max-width: 680px; font-size: 0.95rem;">
+                Turn raw data arrays and column schemas into lightweight, browser-native autocomplete lists bound directly to your inputs.
+            </p>
+        </div>
+    </section>
+
+    <!-- Main Playground Container -->
+    <main class="container py-4">
+        <div class="row g-4">
+            <!-- Left Column: Interactive Inputs & Controls -->
             <div class="col-lg-6">
                 <div class="panel-box">
-                    <div class="d-flex justify-content-between align-items-center mb-3 pb-1 border-bottom">
-                        <span class="fw-bold small text-dark"><i class="bi bi-search me-1 text-primary"></i>Live Autocomplete Test</span>
-                        <span class="badge bg-info-subtle text-info border small">HTML5 &lt;datalist&gt;</span>
+                    <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-secondary border-opacity-25">
+                        <span class="fw-bold small text-white"><i class="bi bi-search me-1 text-info"></i>Live Autocomplete Inputs</span>
+                        <span class="badge bg-success-subtle text-success border border-success-subtle small">Pure Native Browser UI</span>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="stock-input" class="form-label small fw-semibold text-dark">
-                            Stock Item Name (double-click or type):
+                    <div class="mb-4">
+                        <label for="stock-input" class="form-label small fw-semibold text-white">
+                            Stock Item Name (double-click or type to autocomplete):
                         </label>
-                        <input class="form-control" id="stock-input" list="allinventoryentries.stockitemname-datalist" placeholder="e.g. ROPE or Shading...">
-                        <div class="form-text small text-muted">
+                        <input class="form-control form-control-custom" id="stock-input" list="allinventoryentries.stockitemname-datalist" placeholder="e.g. Type 'ROPE' or 'Shading'...">
+                        <div class="form-text text-secondary small">
                             Bound to <code>&lt;datalist id="allinventoryentries.stockitemname-datalist"&gt;</code>
                         </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="batch-input" class="form-label small fw-semibold text-dark">
-                            Batch Name (double-click or type):
+                    <div class="mb-4">
+                        <label for="batch-input" class="form-label small fw-semibold text-white">
+                            Batch Name (double-click or type to autocomplete):
                         </label>
-                        <input class="form-control" id="batch-input" list="allinventoryentries.batchallocations.batchname-datalist" placeholder="e.g. 10 MM or 20 MM...">
-                        <div class="form-text small text-muted">
+                        <input class="form-control form-control-custom" id="batch-input" list="allinventoryentries.batchallocations.batchname-datalist" placeholder="e.g. Type '10 MM' or '20 MM'...">
+                        <div class="form-text text-secondary small">
                             Bound to <code>&lt;datalist id="allinventoryentries.batchallocations.batchname-datalist"&gt;</code>
                         </div>
                     </div>
 
-                    <div id="datalist-target-container"></div>
+                    <div class="pt-3 border-top border-secondary border-opacity-25">
+                        <div class="small fw-bold text-white mb-2">Dynamic Mutation Actions (test real-time .update()):</div>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <button id="btn-add-voucher" class="btn btn-action">
+                                <i class="bi bi-plus-circle me-1"></i> Add New Voucher
+                            </button>
+                            <button id="btn-filter-top3" class="btn btn-action">
+                                <i class="bi bi-funnel me-1"></i> Filter Top 3
+                            </button>
+                            <button id="btn-reset" class="btn btn-action">
+                                <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Hidden target container for generated datalists -->
+                    <div id="datalist-target-container" class="mt-3"></div>
                 </div>
             </div>
 
+            <!-- Right Column: Real-Time DOM Inspector -->
             <div class="col-lg-6">
                 <div class="dom-inspector">
-                    <div class="text-secondary pb-1 mb-2 border-bottom border-secondary">// Rendered DOM Tree & Options Summary</div>
+                    <div class="d-flex justify-content-between align-items-center pb-2 mb-2 border-bottom border-secondary border-opacity-25">
+                        <span class="text-secondary fw-bold">// Real-Time Generated DOM Inspector</span>
+                        <span id="inspector-badge" class="badge bg-primary-subtle text-primary" style="font-size: 10px;">Compiling...</span>
+                    </div>
                     <pre class="m-0 text-info" id="inspector-output">Inspecting generated datalists...</pre>
                 </div>
             </div>
         </div>
+
+        <!-- Documentation Gateways -->
+        <div class="row g-3 mt-4">
+            <div class="col-md-4">
+                <a href="pages/overview.html" class="gateway-card h-100">
+                    <div>
+                        <div class="fw-bold text-white mb-1"><i class="bi bi-compass me-1 text-info"></i> Overview</div>
+                        <div class="text-secondary small">What it does, core features, and architectural scope.</div>
+                    </div>
+                    <div class="text-info small fw-bold mt-3">Read Overview &rarr;</div>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a href="pages/why.html" class="gateway-card h-100">
+                    <div>
+                        <div class="fw-bold text-white mb-1"><i class="bi bi-lightbulb me-1 text-warning"></i> Why Native Datalist?</div>
+                        <div class="text-secondary small">Eliminate bloated custom dropdown libraries and mobile UI bugs.</div>
+                    </div>
+                    <div class="text-info small fw-bold mt-3">Learn Why &rarr;</div>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a href="pages/how-it-works.html" class="gateway-card h-100">
+                    <div>
+                        <div class="fw-bold text-white mb-1"><i class="bi bi-gear me-1 text-success"></i> How It Works</div>
+                        <div class="text-secondary small">Step-by-step pipeline from columns and records to DOM mounting.</div>
+                    </div>
+                    <div class="text-info small fw-bold mt-3">Explore Pipeline &rarr;</div>
+                </a>
+            </div>
+        </div>
     </main>
 
+    <!-- Footer -->
+    <footer class="text-center py-4 text-secondary small border-top border-secondary border-opacity-25 mt-5">
+        json-to-dom-datalist &bull; KeshavSoft Declarative UI Architecture &bull; MIT License
+    </footer>
+
+    <!-- Runtime Script Loading (Automatically uses root dist/min.js) -->
     <script type="module">
         import { sampleColumns, sampleDatalistConfig, sampleData } from "./sampleData.js";
-        import { DataList } from "./dist/v1/min.js";
+        import { DataList } from "./dist/min.js";
 
-        // Guaranteed self-contained json-to-dom engine
+        // Self-contained json-to-dom compiler fallback for pure standalone running
         if (!window.ks?.["json-to-dom"]?.buildSpecElement) {
-            const isNullOrUndefined = ({ inSpec }) => !inSpec;
-            const isDOMNode = ({ inSpec }) => inSpec instanceof Node;
-            const isArray = ({ inSpec }) => Array.isArray(inSpec);
-            const isObject = ({ inSpec }) => typeof inSpec === "object" && !!inSpec;
-            const handleArray = ({ inSpec }) => inSpec.map(item => buildSpecElement(item)).flat().filter(Boolean);
             const createElement = ({ inTagName }) => document.createElement(inTagName);
-            const applyTextContent = ({ inElement, inTextContent }) => {
-                if (inTextContent) inElement.textContent = inTextContent;
-                return inElement;
-            };
-            const applyProperties = ({ inElement, inProperties }) => {
-                if (inProperties) Object.assign(inElement, inProperties);
-                return inElement;
-            };
             const applyAttributes = ({ inElement, inAttributes }) => {
                 if (inAttributes) {
                     Object.entries(inAttributes).forEach(([key, val]) => {
@@ -132,84 +292,105 @@
                 }
                 return inElement;
             };
-            const applyClassList = ({ inElement, inClassList }) => {
-                if (inClassList) {
-                    if (Array.isArray(inClassList)) inClassList.forEach(c => c && inElement.classList.add(c));
-                    else if (typeof inClassList === "string") inClassList.split(" ").forEach(c => c && inElement.classList.add(c));
-                }
-                return inElement;
-            };
-            const applyEvents = ({ inElement, inEvents, inTagName }) => {
-                if (inEvents && typeof inEvents === "object") {
-                    Object.entries(inEvents).forEach(([ev, handler]) => {
-                        if (typeof handler === "function") inElement.addEventListener(ev, handler);
-                    });
-                }
+            const applyTextContent = ({ inElement, inTextContent }) => {
+                if (inTextContent) inElement.textContent = inTextContent;
                 return inElement;
             };
             const appendChildren = ({ inElement, inChildren }) => {
                 if (inChildren && Array.isArray(inChildren)) {
                     inChildren.forEach(ch => {
-                        const node = buildSpecElement(ch);
+                        const node = buildSpecElement({ inSpec: ch });
                         if (node) inElement.appendChild(node);
                     });
                 }
                 return inElement;
             };
-            const handleElement = ({ inSpec }) => {
+            const buildSpecElement = ({ inSpec }) => {
+                if (!inSpec || typeof inSpec !== "object") return null;
                 const el = createElement({ inTagName: inSpec.tagName || "div" });
                 applyAttributes({ inElement: el, inAttributes: inSpec.attributes });
-                applyClassList({ inElement: el, inClassList: inSpec.classList });
-                applyProperties({ inElement: el, inProperties: inSpec.properties });
                 applyTextContent({ inElement: el, inTextContent: inSpec.textContent });
-                applyEvents({ inElement: el, inEvents: inSpec.events, inTagName: inSpec.tagName });
                 appendChildren({ inElement: el, inChildren: inSpec.children });
                 return el;
-            };
-            const buildSpecElement = (specInput) => {
-                const spec = specInput && typeof specInput === "object" && "inSpec" in specInput && !(specInput instanceof Node) && !Array.isArray(specInput) ? specInput.inSpec : specInput;
-                if (isNullOrUndefined({ inSpec: spec })) return null;
-                if (isDOMNode({ inSpec: spec })) return spec;
-                if (isArray({ inSpec: spec })) return handleArray({ inSpec: spec });
-                if (isObject({ inSpec: spec })) return handleElement({ inSpec: spec });
-                return null;
             };
             window.ks = window.ks || {};
             window.ks["json-to-dom"] = { buildSpecElement };
         }
 
+        let currentData = [...sampleData];
+
         const dataList = new DataList({
             targetContainerId: "datalist-target-container",
-            data: sampleData,
+            data: currentData,
             columns: sampleColumns,
             config: sampleDatalistConfig
         });
 
-        dataList.render();
+        await dataList.render();
 
-        const updateInspector = ({ inContainerId } = {}) => {
-            const localContainerId = inContainerId;
-            const container = document.getElementById(localContainerId);
+        const updateInspector = () => {
+            const container = document.getElementById("datalist-target-container");
             const inspector = document.getElementById("inspector-output");
+            const badge = document.getElementById("inspector-badge");
             if (!container || !inspector) return;
 
             const lists = container.querySelectorAll("datalist");
-            let summary = `Found ${lists.length} <datalist> elements generated:\n\n`;
+            let summary = `// Compiled via json-to-dom (src's highest version)\n`;
+            summary += `// Total Records Processed: ${currentData.length}\n`;
+            summary += `// Total <datalist> Elements Generated: ${lists.length}\n\n`;
 
             lists.forEach(dl => {
                 const opts = dl.querySelectorAll("option");
-                summary += `• <datalist id="${dl.id}"> [${opts.length} unique values]\n`;
+                summary += `► <datalist id="${dl.id}"> [${opts.length} Distinct Values]\n`;
                 opts.forEach((opt, idx) => {
-                    if (idx < 6) summary += `    - "${opt.value}"\n`;
+                    if (idx < 8) {
+                        summary += `    ├─ <option value="${opt.value}">${opt.textContent}</option>\n`;
+                    }
                 });
-                if (opts.length > 6) summary += `    ... and ${opts.length - 6} more options\n`;
+                if (opts.length > 8) {
+                    summary += `    └─ ... and ${opts.length - 8} more distinct options\n`;
+                }
                 summary += "\n";
             });
 
             inspector.textContent = summary;
+            if (badge) badge.textContent = `${lists.length} Active Datalists`;
         };
 
-        updateInspector({ inContainerId: "datalist-target-container" });
+        updateInspector();
+
+        // Interactive Button Handlers
+        document.getElementById("btn-add-voucher").addEventListener("click", () => {
+            currentData.push({
+                "allinventoryentries.stockitemname": "SUPER HEAVY WIRE ROPE 50MM",
+                "allinventoryentries.batchallocations.batchname": "BATCH-SPECIAL-2026",
+                stockItemName: "SUPER HEAVY WIRE ROPE 50MM",
+                batchName: "BATCH-SPECIAL-2026"
+            });
+            dataList.update({ inData: currentData });
+            updateInspector();
+        });
+
+        document.getElementById("btn-filter-top3").addEventListener("click", () => {
+            const top3Config = {
+                ...sampleDatalistConfig,
+                datalist: { ...sampleDatalistConfig.datalist, topN: 3 }
+            };
+            const top3List = new DataList({
+                targetContainerId: "datalist-target-container",
+                data: currentData,
+                columns: sampleColumns,
+                config: top3Config
+            });
+            top3List.render();
+            updateInspector();
+        });
+
+        document.getElementById("btn-reset").addEventListener("click", () => {
+            currentData = [...sampleData];
+            dataList.update({ inData: currentData });
+            updateInspector();
+        });
     </script>
 </body>
 

@@ -1,5 +1,5 @@
 import { defineConfig } from "vite";
-import { readdirSync, existsSync } from "node:fs";
+import { readdirSync, existsSync, copyFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -17,6 +17,21 @@ if (!latestSrcVersion) {
 const entryFile = resolve(__dirname, "src", latestSrcVersion, "index.js");
 
 export default defineConfig({
+    plugins: [
+        {
+            name: "copy-latest-to-root-dist",
+            closeBundle() {
+                try {
+                    copyFileSync(
+                        resolve(__dirname, "docs/dist", latestSrcVersion, "min.js"),
+                        resolve(__dirname, "docs/dist", "min.js")
+                    );
+                } catch (e) {
+                    console.warn("Could not copy latest to docs/dist/min.js", e);
+                }
+            }
+        }
+    ],
     server: {
         fs: {
             allow: [".."]

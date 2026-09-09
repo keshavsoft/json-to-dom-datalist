@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How It Works | json-to-dom-datalist</title>
+  <link rel="stylesheet" href="../site.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a href="../index.html" class="brand" style="text-decoration: none; color: inherit;">
+        <span class="brand-mark">D</span>
+        <span>json-to-dom-datalist</span>
+      </a>
+      <nav class="nav" aria-label="Main navigation">
+        <a href="./overview.html">Overview</a>
+        <a href="./why.html">Why</a>
+        <a class="active" href="./how-it-works.html">How it works</a>
+        <a href="./architecture.html">Architecture</a>
+        <a href="./versions.html">Versions</a>
+        <a href="./tasks.html">Tasks</a>
+        <a href="../index.html">Playground</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container hero">
+    <section class="hero-card">
+      <div class="hero-header">
+        <span class="kicker">Runtime Pipeline</span>
+        <h1>From Raw Records to Live Browser Autocomplete</h1>
+        <p>
+          Learn how <code>json-to-dom-datalist</code> inspects your data arrays, computes frequency counts, generates <code>json-to-dom</code> element trees, and connects to your inputs.
+        </p>
+      </div>
+      <div class="hero-body">
+        <div class="grid">
+          <article class="card col-12">
+            <h2>The 5-Step Pipeline</h2>
+            <pre><code>[Data Array] + [Columns Spec] + [Config]
+                    │
+           1. DataListStore (Immutable state &amp; active columns)
+                    │
+           2. groupBy (Extracts distinct values &amp; frequency counts)
+                    │
+           3. DatalistBuilder (Builds declarative &lt;datalist&gt; &amp; &lt;option&gt; JSON trees)
+                    │
+           4. DOM Mounting (Renders and attaches to container)
+                    │
+           5. Native Input Binding (&lt;input list="col-datalist"&gt;)</code></pre>
+          </article>
+
+          <article class="card col-6">
+            <h2>1. Configuration &amp; Setup</h2>
+            <pre><code>import { DataList } from "json-to-dom-datalist";
+
+const dataList = new DataList({
+  columns: [
+    { key: "stockItemName", datalistId: "stock-list" },
+    { key: "batchName", datalistId: "batch-list" }
+  ],
+  config: {
+    datalist: { topN: 10 }
+  },
+  data: records,
+  targetContainerId: "datalist-container"
+});
+
+await dataList.render();</code></pre>
+          </article>
+
+          <article class="card col-6">
+            <h2>2. HTML Input Integration</h2>
+            <pre><code>&lt;!-- Simply set list="stock-list" on your input --&gt;
+&lt;label&gt;Stock Item:&lt;/label&gt;
+&lt;input type="text" list="stock-list" placeholder="Type ROPE..." /&gt;
+
+&lt;label&gt;Batch:&lt;/label&gt;
+&lt;input type="text" list="batch-list" placeholder="Type Batch..." /&gt;
+
+&lt;!-- Datalists are mounted cleanly into this container --&gt;
+&lt;div id="datalist-container"&gt;&lt;/div&gt;</code></pre>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    json-to-dom-datalist &bull; KeshavSoft Declarative UI Architecture &bull; MIT License
+  </footer>
+</body>
+</html>

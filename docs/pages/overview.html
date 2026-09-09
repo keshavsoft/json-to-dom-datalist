@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Overview | json-to-dom-datalist</title>
+  <link rel="stylesheet" href="../site.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a href="../index.html" class="brand" style="text-decoration: none; color: inherit;">
+        <span class="brand-mark">D</span>
+        <span>json-to-dom-datalist</span>
+      </a>
+      <nav class="nav" aria-label="Main navigation">
+        <a class="active" href="./overview.html">Overview</a>
+        <a href="./why.html">Why</a>
+        <a href="./how-it-works.html">How it works</a>
+        <a href="./architecture.html">Architecture</a>
+        <a href="./versions.html">Versions</a>
+        <a href="./tasks.html">Tasks</a>
+        <a href="../index.html">Playground</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container hero">
+    <section class="hero-card">
+      <div class="hero-header">
+        <span class="kicker">Project overview</span>
+        <h1>Config-Driven Native HTML5 &lt;datalist&gt; Autocomplete</h1>
+        <p>
+          <code>json-to-dom-datalist</code> compiles tabular data into native browser <code>&lt;datalist&gt;</code> autocomplete dropdowns.
+          It extracts distinct values, calculates frequency counts, and builds declarative specs for <code>json-to-dom</code> with zero external dependencies.
+        </p>
+      </div>
+      <div class="hero-body">
+        <div class="grid">
+          <article class="card col-6">
+            <h2>What it does</h2>
+            <ul class="checks">
+              <li>Computes distinct values and frequency counts from column datasets.</li>
+              <li>Generates W3C-valid <code>&lt;datalist&gt;</code> and <code>&lt;option&gt;</code> JSON specifications.</li>
+              <li>Renders directly into live DOM elements mounted inside a container.</li>
+              <li>Binds to native browser <code>&lt;input list="..."&gt;</code> with zero JavaScript overhead on the input.</li>
+              <li>Dynamically refreshes options via <code>.update({ inData })</code> without full page reloads.</li>
+              <li>Ships with zero external dependencies and instant <code>npx json-to-dom-datalist</code> scaffolding.</li>
+            </ul>
+          </article>
+
+          <article class="card col-6">
+            <h2>Why developers choose it</h2>
+            <ul class="checks">
+              <li>Zero styling conflicts — renders with native browser OS autocomplete UI.</li>
+              <li>Complete mobile device keyboard integration (iOS &amp; Android).</li>
+              <li>Accessible by default without custom ARIA role workarounds.</li>
+              <li>High-speed grouping and frequency calculation via <code>groupBy.js</code>.</li>
+              <li>Integrates natively with <code>json-to-dom-form</code> and <code>json-to-dom</code>.</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    json-to-dom-datalist &bull; KeshavSoft Declarative UI Architecture &bull; MIT License
+  </footer>
+</body>
+</html>

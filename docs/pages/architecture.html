@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Architecture | json-to-dom-datalist</title>
+  <link rel="stylesheet" href="../site.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a href="../index.html" class="brand" style="text-decoration: none; color: inherit;">
+        <span class="brand-mark">D</span>
+        <span>json-to-dom-datalist</span>
+      </a>
+      <nav class="nav" aria-label="Main navigation">
+        <a href="./overview.html">Overview</a>
+        <a href="./why.html">Why</a>
+        <a href="./how-it-works.html">How it works</a>
+        <a class="active" href="./architecture.html">Architecture</a>
+        <a href="./versions.html">Versions</a>
+        <a href="./tasks.html">Tasks</a>
+        <a href="../index.html">Playground</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container hero">
+    <section class="hero-card">
+      <div class="hero-header">
+        <span class="kicker">Engine Architecture</span>
+        <h1>Modular Internal Structure &amp; Clean Separation</h1>
+        <p>
+          Aligned with KeshavSoft standards, <code>json-to-dom-datalist</code> decouples state management, spec builders, lifecycle methods, and actions into isolated units.
+        </p>
+      </div>
+      <div class="hero-body">
+        <div class="grid">
+          <article class="card col-6">
+            <h2>Folder Hierarchy (src's Highest Version)</h2>
+            <pre><code>src/v2/
+├── common/
+│   ├── SourceStore.js      // Base catalog resolver
+│   ├── cloneData.js        // Deep immutability
+│   ├── groupBy.js          // Distinct counts
+│   └── pruneTreeWithIds.js // Control tree extraction
+├── datalist/
+│   ├── DataList.js         // Orchestration class
+│   ├── actions/            // load, update actions
+│   ├── methods/            // buildSpec, renderStructure
+│   ├── datalistStore/      // DataListStore.js
+│   ├── datalistBuilder/    // buildDataList, buildOptions
+│   └── render/             // DOM attachment
+└── index.js                // Universal globalThis export</code></pre>
+          </article>
+
+          <article class="card col-6">
+            <h2>KeshavSoft Parameter Convention</h2>
+            <p>Every internal method and function adheres to the strict <code>{ in... }</code> parameter convention and immediately unpacks into <code>local...</code> variables:</p>
+            <pre><code>const buildOptions = ({
+  inData = [],
+  inKey = "",
+  inTopN = 0,
+  inGroupedData
+} = {}) => {
+  const localData = inData;
+  const localKey = inKey;
+  const localTopN = inTopN;
+  const localGroupedData = inGroupedData;
+
+  // Pure data transformation...
+  return grouped.map(({ value, count }) => ({
+    tagName: "option",
+    attributes: { value, label: `${value} (${count})` },
+    textContent: `${value} (${count})`
+  }));
+};</code></pre>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    json-to-dom-datalist &bull; KeshavSoft Declarative UI Architecture &bull; MIT License
+  </footer>
+</body>
+</html>

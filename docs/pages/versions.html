@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Version Strategy | json-to-dom-datalist</title>
+  <link rel="stylesheet" href="../site.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a href="../index.html" class="brand" style="text-decoration: none; color: inherit;">
+        <span class="brand-mark">D</span>
+        <span>json-to-dom-datalist</span>
+      </a>
+      <nav class="nav" aria-label="Main navigation">
+        <a href="./overview.html">Overview</a>
+        <a href="./why.html">Why</a>
+        <a href="./how-it-works.html">How it works</a>
+        <a href="./architecture.html">Architecture</a>
+        <a class="active" href="./versions.html">Versions</a>
+        <a href="./tasks.html">Tasks</a>
+        <a href="../index.html">Playground</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container hero">
+    <section class="hero-card">
+      <div class="hero-header">
+        <span class="kicker">Evolution &amp; Stability</span>
+        <h1>Version Strategy &amp; "src's Highest Version"</h1>
+        <p>
+          How <code>json-to-dom-datalist</code> evolves across revisions without breaking existing projects, and how <code>npx json-to-dom-datalist</code> dynamically selects the highest version.
+        </p>
+      </div>
+      <div class="hero-body">
+        <div class="grid">
+          <article class="card col-6">
+            <h2>Version Timeline</h2>
+            <ul class="checks">
+              <li><strong>v1:</strong> Initial HTML5 datalist renderer proof-of-concept.</li>
+              <li><strong>v2 (Current Highest):</strong> Decoupled modular architecture with <code>DataListStore</code>, frequency counting in <code>groupBy</code>, dynamic <code>update()</code> lifecycle, and universal <code>globalThis</code> compatibility for Node.js and browsers.</li>
+            </ul>
+          </article>
+
+          <article class="card col-6">
+            <h2>Developer's Guide: No Hardcoded Versions</h2>
+            <p>Consumer application code should never import specific versions directly:</p>
+            <pre><code>// Recommended: loads src's highest version automatically
+import { DataList } from "json-to-dom-datalist";
+
+// Or when copied via CLI:
+import { DataList } from "./json-to-dom-datalist/index.js";</code></pre>
+          </article>
+
+          <article class="card col-12">
+            <h2>Instant Scaffolding via NPX CLI</h2>
+            <p>The CLI discovers and copies the latest engine version without requiring manual configuration:</p>
+            <pre><code># Automatically picks the highest version (v2)
+npx json-to-dom-datalist
+
+# Or optionally specify destination folder and version target
+npx json-to-dom-datalist ./src/components/datalist --version-target=v2</code></pre>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    json-to-dom-datalist &bull; KeshavSoft Declarative UI Architecture &bull; MIT License
+  </footer>
+</body>
+</html>

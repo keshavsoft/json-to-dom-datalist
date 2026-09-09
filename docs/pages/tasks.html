@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tasks & Roadmap | json-to-dom-datalist</title>
+  <link rel="stylesheet" href="../site.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a href="../index.html" class="brand" style="text-decoration: none; color: inherit;">
+        <span class="brand-mark">D</span>
+        <span>json-to-dom-datalist</span>
+      </a>
+      <nav class="nav" aria-label="Main navigation">
+        <a href="./overview.html">Overview</a>
+        <a href="./why.html">Why</a>
+        <a href="./how-it-works.html">How it works</a>
+        <a href="./architecture.html">Architecture</a>
+        <a href="./versions.html">Versions</a>
+        <a class="active" href="./tasks.html">Tasks</a>
+        <a href="../index.html">Playground</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container hero">
+    <section class="hero-card">
+      <div class="hero-header">
+        <span class="kicker">Execution Status</span>
+        <h1>Tasks &amp; Roadmap</h1>
+        <p>
+          Current features, verified capabilities, and upcoming milestones for <code>json-to-dom-datalist</code>.
+        </p>
+      </div>
+      <div class="hero-body">
+        <div class="grid">
+          <article class="card col-6">
+            <h2>Completed Milestones</h2>
+            <ul class="checks">
+              <li>Config-driven HTML5 <code>&lt;datalist&gt;</code> options generator.</li>
+              <li>Distinct value aggregation with occurrence counts (<code>groupBy.js</code>).</li>
+              <li>Decoupled modular architecture (<code>DataListStore</code>, <code>actions</code>, <code>methods</code>).</li>
+              <li>Universal compatibility in Node.js (SSR / test runner) and browsers via <code>globalThis</code>.</li>
+              <li>Dynamic real-time updates via <code>.update({ inData })</code>.</li>
+              <li>Zero-dependency <code>npx json-to-dom-datalist</code> CLI.</li>
+              <li>Automated <code>node --test</code> unit test suite with 100% pass rate.</li>
+            </ul>
+          </article>
+
+          <article class="card col-6">
+            <h2>Upcoming Roadmap</h2>
+            <ul class="checks">
+              <li>Remote asynchronous data provider resolution (<code>dataProvider</code>).</li>
+              <li>Custom label template formatting functions.</li>
+              <li>Debounced search filtering hook for massive datasets (&gt;50,000 items).</li>
+              <li>Integration recipes with <code>json-to-dom-form</code> and <code>json-to-dom-table</code>.</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    json-to-dom-datalist &bull; KeshavSoft Declarative UI Architecture &bull; MIT License
+  </footer>
+</body>
+</html>
