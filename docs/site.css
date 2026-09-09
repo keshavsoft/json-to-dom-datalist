@@ -239,3 +239,51 @@ pre code {
   font-weight: 600;
   text-transform: uppercase;
 }
+
+.doc-nav-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+  flex-wrap: wrap;
+}
+
+.doc-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: rgba(92, 200, 255, 0.1);
+  color: var(--cyan);
+  border: 1px solid rgba(92, 200, 255, 0.25);
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: 0.2s ease;
+  text-decoration: none;
+}
+
+.doc-btn:hover {
+  background: var(--blue);
+  color: #02151d;
+  text-decoration: none;
+  border-color: var(--blue);
+  transform: translateY(-1px);
+}
+
+.doc-btn-secondary {
+  background: rgba(148, 163, 184, 0.08);
+  color: var(--muted);
+  border-color: var(--line);
+}
+
+.doc-btn-secondary:hover {
+  background: rgba(148, 163, 184, 0.18);
+  color: var(--text);
+  border-color: rgba(148, 163, 184, 0.35);
+  text-decoration: none;
+}
+

@@ -141,11 +141,11 @@
     <!-- Top Navigation Bar -->
     <header class="top-nav py-2 px-3 px-md-4">
         <div class="container-fluid d-flex align-items-center justify-content-between flex-wrap gap-2">
-            <div class="d-flex align-items-center gap-2">
+            <a href="index.html" class="d-flex align-items-center gap-2 text-decoration-none">
                 <span class="brand-mark">D</span>
                 <span class="fw-bold text-white fs-6">json-to-dom-datalist</span>
                 <span class="badge rounded-pill bg-info-subtle text-info border border-info-subtle ms-2 font-monospace" style="font-size: 11px;">src's Highest: v2</span>
-            </div>
+            </a>
             <nav class="d-flex align-items-center gap-1 flex-wrap">
                 <a href="pages/overview.html" class="nav-link-custom">Overview</a>
                 <a href="pages/why.html" class="nav-link-custom">Why</a>
@@ -154,6 +154,9 @@
                 <a href="pages/versions.html" class="nav-link-custom">Versions</a>
                 <a href="pages/tasks.html" class="nav-link-custom">Tasks</a>
                 <a href="index.html" class="nav-link-custom active">Playground</a>
+                <a href="https://github.com/keshavsoft/json-to-dom-datalist" target="_blank" rel="noopener noreferrer" class="nav-link-custom text-info">
+                    <i class="bi bi-github me-1"></i>GitHub
+                </a>
             </nav>
         </div>
     </header>
@@ -267,12 +270,46 @@
                     <div class="text-info small fw-bold mt-3">Explore Pipeline &rarr;</div>
                 </a>
             </div>
+            <div class="col-md-4">
+                <a href="pages/architecture.html" class="gateway-card h-100">
+                    <div>
+                        <div class="fw-bold text-white mb-1"><i class="bi bi-diagram-3 me-1 text-primary"></i> Architecture</div>
+                        <div class="text-secondary small">Decoupled store, builders, actions, and KeshavSoft conventions.</div>
+                    </div>
+                    <div class="text-info small fw-bold mt-3">View Architecture &rarr;</div>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a href="pages/versions.html" class="gateway-card h-100">
+                    <div>
+                        <div class="fw-bold text-white mb-1"><i class="bi bi-layers me-1 text-danger"></i> Version Strategy</div>
+                        <div class="text-secondary small">Non-breaking src evolution &amp; highest version auto-resolution.</div>
+                    </div>
+                    <div class="text-info small fw-bold mt-3">Learn Versioning &rarr;</div>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a href="pages/tasks.html" class="gateway-card h-100">
+                    <div>
+                        <div class="fw-bold text-white mb-1"><i class="bi bi-check2-circle me-1 text-info"></i> Tasks &amp; Roadmap</div>
+                        <div class="text-secondary small">Completed capabilities and upcoming roadmap milestones.</div>
+                    </div>
+                    <div class="text-info small fw-bold mt-3">Track Progress &rarr;</div>
+                </a>
+            </div>
         </div>
     </main>
 
     <!-- Footer -->
-    <footer class="text-center py-4 text-secondary small border-top border-secondary border-opacity-25 mt-5">
-        json-to-dom-datalist &bull; KeshavSoft Declarative UI Architecture &bull; MIT License
+    <footer class="py-4 text-secondary small border-top border-secondary border-opacity-25 mt-5">
+        <div class="container d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2">
+            <span>json-to-dom-datalist &bull; KeshavSoft Declarative UI Architecture &bull; MIT License</span>
+            <div class="d-flex gap-3">
+                <a href="pages/overview.html" class="text-secondary text-decoration-none">Overview</a>
+                <a href="pages/how-it-works.html" class="text-secondary text-decoration-none">How It Works</a>
+                <a href="https://github.com/keshavsoft/json-to-dom-datalist" target="_blank" rel="noopener noreferrer" class="text-secondary text-decoration-none"><i class="bi bi-github me-1"></i>GitHub</a>
+            </div>
+        </div>
     </footer>
 
     <!-- Runtime Script Loading (Automatically uses root dist/min.js) -->
