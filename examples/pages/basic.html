@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Basic usage · json-to-dom-datalist</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #060d1f;
+        --panel: #0b1629;
+        --panel-alt: #0f1e35;
+        --border: rgba(99,179,237,0.14);
+        --soft: #e2e8f0;
+        --muted: #7fa4c4;
+        --cyan: #38bdf8;
+        --cyan-dim: rgba(56,189,248,0.12);
+        --violet: #a78bfa;
+        --violet-dim: rgba(167,139,250,0.12);
+        --green: #34d399;
+        --green-dim: rgba(52,211,153,0.12);
+      }
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--soft); min-height: 100vh; }
+
+      nav {
+        position: sticky; top: 0; z-index: 100;
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 14px 32px;
+        background: rgba(6,13,31,0.88); backdrop-filter: blur(16px);
+        border-bottom: 1px solid var(--border);
+      }
+      .brand {
+        font-weight: 800; font-size: 1rem;
+        background: linear-gradient(90deg, var(--cyan), var(--violet));
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      }
+      .nav-links { display: flex; gap: 24px; }
+      .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+      .nav-links a:hover, .nav-links a.active { color: var(--soft); }
+
+      .wrap { max-width: 960px; margin: 0 auto; padding: 48px 24px 80px; }
+
+      .page-header { margin-bottom: 40px; }
+      .eyebrow {
+        display: inline-flex; align-items: center; gap: 8px;
+        padding: 5px 13px; border-radius: 999px;
+        background: var(--cyan-dim); border: 1px solid rgba(56,189,248,0.22);
+        color: var(--cyan); font-size: 11px; font-weight: 700;
+        letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 16px;
+      }
+      h1 { font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 800; letter-spacing: -0.025em; margin-bottom: 12px; }
+      .sub { color: var(--muted); font-size: 0.97rem; line-height: 1.7; max-width: 680px; }
+
+      /* ── Demo card ── */
+      .demo-card {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        overflow: hidden;
+        margin-bottom: 32px;
+      }
+      .demo-head {
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 16px 22px; border-bottom: 1px solid var(--border);
+      }
+      .demo-title { font-weight: 600; font-size: 0.95rem; }
+      .badge {
+        padding: 4px 10px; border-radius: 999px; font-size: 0.72rem;
+        font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+      }
+      .badge.cyan { background: var(--cyan-dim); color: var(--cyan); border: 1px solid rgba(56,189,248,0.2); }
+      .badge.green { background: var(--green-dim); color: var(--green); border: 1px solid rgba(52,211,153,0.2); }
+      .badge.violet { background: var(--violet-dim); color: var(--violet); border: 1px solid rgba(167,139,250,0.2); }
+
+      .demo-body { padding: 24px; }
+
+      /* ── Form fields ── */
+      .fields-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 20px; }
+      .field { display: flex; flex-direction: column; gap: 7px; }
+      .field label { font-size: 0.75rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; }
+      .field input {
+        background: var(--panel-alt); border: 1px solid var(--border); border-radius: 10px;
+        padding: 10px 14px; color: var(--soft); font-family: inherit; font-size: 0.93rem;
+        outline: none; transition: border-color 0.2s, box-shadow 0.2s; width: 100%;
+      }
+      .field input:focus { border-color: var(--cyan); box-shadow: 0 0 0 3px rgba(56,189,248,0.12); }
+      .field input::placeholder { color: rgba(127,164,196,0.4); }
+
+      /* ── Info strip ── */
+      .info-strip {
+        display: flex; gap: 10px; align-items: flex-start;
+        background: var(--cyan-dim); border: 1px solid rgba(56,189,248,0.18);
+        border-radius: 12px; padding: 14px 16px; margin-bottom: 20px;
+        font-size: 0.86rem; color: var(--cyan); line-height: 1.6;
+      }
+      .info-strip .icon { flex-shrink: 0; font-size: 1rem; }
+
+      /* ── Code block ── */
+      .code-section { margin-bottom: 32px; }
+      .code-title { font-size: 0.8rem; color: var(--muted); margin-bottom: 10px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }
+      pre.code {
+        background: #020810; border: 1px solid var(--border); border-radius: 14px;
+        padding: 20px 22px; font-family: 'Fira Code', monospace;
+        font-size: 0.81rem; line-height: 1.8; color: #a9c4e0;
+        overflow-x: auto; white-space: pre;
+      }
+      .kw { color: var(--violet); }
+      .str { color: var(--green); }
+      .num { color: #fbbf24; }
+      .cm { color: #4a6a8a; font-style: italic; }
+      .prop { color: var(--cyan); }
+
+      /* ── Result panel ── */
+      .result-panel {
+        background: #020810; border: 1px solid var(--border); border-radius: 14px;
+        padding: 18px 20px; font-family: 'Fira Code', monospace;
+        font-size: 0.8rem; line-height: 1.75; color: #6a9abf;
+        overflow-x: auto; white-space: pre; min-height: 80px;
+      }
+
+      .divider { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
+
+      .section-heading { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
+      .section-sub { color: var(--muted); font-size: 0.88rem; margin-bottom: 20px; }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <span class="brand">json-to-dom-datalist</span>
+      <div class="nav-links">
+        <a href="../index.html">Overview</a>
+        <a href="./basic.html" class="active">Basic</a>
+        <a href="./topn.html">Top-N</a>
+        <a href="./dynamic.html">Dynamic load</a>
+      </div>
+    </nav>
+
+    <div class="wrap">
+      <header class="page-header">
+        <div class="eyebrow">⚡ Example 1</div>
+        <h1>Basic usage</h1>
+        <p class="sub">
+          Create a <code>DataList</code> with static data, define which columns to index,
+          call <code>renderStructure()</code>, and wire the generated <code>&lt;datalist&gt;</code>
+          IDs to your inputs. That's it.
+        </p>
+      </header>
+
+      <!-- Demo 1: single column -->
+      <div class="demo-card">
+        <div class="demo-head">
+          <span class="demo-title">Single column — Stock Item autocomplete</span>
+          <span class="badge cyan">v3</span>
+        </div>
+        <div class="demo-body">
+          <div class="info-strip">
+            <span class="icon">💡</span>
+            <span>One column definition → one <code>&lt;datalist&gt;</code>. Start typing in the input below — the browser native dropdown is powered by the rendered datalist.</span>
+          </div>
+          <div class="fields-grid">
+            <div class="field">
+              <label>Stock Item</label>
+              <input id="inp-single-stock" list="single-stock-dl" placeholder="e.g. ROPE…" />
+            </div>
+          </div>
+          <div id="mount-single" style="display:none"></div>
+          <div class="code-title">Rendered datalist HTML</div>
+          <div class="result-panel" id="out-single">(loading…)</div>
+        </div>
+      </div>
+
+      <!-- Demo 2: multiple columns -->
+      <div class="demo-card">
+        <div class="demo-head">
+          <span class="demo-title">Multiple columns — Stock, Batch &amp; Godown</span>
+          <span class="badge green">multi-column</span>
+        </div>
+        <div class="demo-body">
+          <div class="info-strip">
+            <span class="icon">💡</span>
+            <span>Each column in the array produces an independent <code>&lt;datalist&gt;</code> with deduplicated values extracted from your data rows.</span>
+          </div>
+          <div class="fields-grid">
+            <div class="field">
+              <label>Stock Item</label>
+              <input list="multi-stock-dl" placeholder="e.g. ROPE…" />
+            </div>
+            <div class="field">
+              <label>Batch Name</label>
+              <input list="multi-batch-dl" placeholder="e.g. Tuf-Rs.170…" />
+            </div>
+            <div class="field">
+              <label>Godown</label>
+              <input list="multi-godown-dl" placeholder="e.g. Main Location…" />
+            </div>
+          </div>
+          <div id="mount-multi" style="display:none"></div>
+          <div class="code-title">Rendered datalist HTML</div>
+          <div class="result-panel" id="out-multi">(loading…)</div>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- Code walkthrough -->
+      <h2 class="section-heading">Code walkthrough</h2>
+      <p class="section-sub">The full pattern in under 20 lines.</p>
+
+      <div class="code-section">
+        <div class="code-title">import &amp; setup</div>
+        <pre class="code"><span class="kw">import</span> { DataList } <span class="kw">from</span> <span class="str">"json-to-dom-datalist"</span>;
+
+<span class="cm">// Your flat JSON rows</span>
+<span class="kw">const</span> <span class="prop">data</span> = [
+  { <span class="str">"stockitemname"</span>: <span class="str">"ROPE"</span>,    <span class="str">"batchname"</span>: <span class="str">"Tuf-Rs.170"</span> },
+  { <span class="str">"stockitemname"</span>: <span class="str">"ROPE"</span>,    <span class="str">"batchname"</span>: <span class="str">"Tuf-Rs.170"</span> },
+  { <span class="str">"stockitemname"</span>: <span class="str">"Plastic Tray"</span>, <span class="str">"batchname"</span>: <span class="str">"PT-Batch-A"</span> },
+];
+
+<span class="cm">// Column definitions: key = dot-path in your rows, datalistId = &lt;input list=""&gt;</span>
+<span class="kw">const</span> <span class="prop">columns</span> = [
+  { <span class="prop">key</span>: <span class="str">"stockitemname"</span>, <span class="prop">datalistId</span>: <span class="str">"stock-dl"</span> },
+  { <span class="prop">key</span>: <span class="str">"batchname"</span>,     <span class="prop">datalistId</span>: <span class="str">"batch-dl"</span> },
+];
+
+<span class="cm">// Create and render</span>
+<span class="kw">const</span> <span class="prop">dl</span> = <span class="kw">new</span> DataList({ <span class="prop">inData</span>: data, <span class="prop">inColumns</span>: columns });
+dl.renderStructure({ <span class="prop">inContainerId</span>: <span class="str">"my-mount-div"</span> });</pre>
+      </div>
+
+      <div class="code-section">
+        <div class="code-title">wire your inputs</div>
+        <pre class="code"><span class="cm">&lt;!-- Just set list="" to the datalistId you defined --&gt;</span>
+&lt;<span class="kw">input</span> <span class="prop">list</span>=<span class="str">"stock-dl"</span> placeholder=<span class="str">"Stock item…"</span> /&gt;
+&lt;<span class="kw">input</span> <span class="prop">list</span>=<span class="str">"batch-dl"</span>  placeholder=<span class="str">"Batch name…"</span> /&gt;
+
+<span class="cm">&lt;!-- Mount target (the datalist wrapper will be injected here) --&gt;</span>
+&lt;<span class="kw">div</span> <span class="prop">id</span>=<span class="str">"my-mount-div"</span>&gt;&lt;/<span class="kw">div</span>&gt;</pre>
+      </div>
+    </div>
+
+    <script type="module">
+      import { renderExample, showDatalistPreview, sampleData } from "../shared.js";
+
+      // Demo 1: single column
+      const dlSingle = renderExample({
+        targetId: "mount-single",
+        data: sampleData,
+        columns: [
+          { key: "allinventoryentries.stockitemname", datalistId: "single-stock-dl" },
+        ],
+      });
+      showDatalistPreview({ inDataList: dlSingle, inPreviewId: "out-single" });
+
+      // Demo 2: multi-column
+      const dlMulti = renderExample({
+        targetId: "mount-multi",
+        data: sampleData,
+        columns: [
+          { key: "allinventoryentries.stockitemname",              datalistId: "multi-stock-dl" },
+          { key: "allinventoryentries.batchallocations.batchname", datalistId: "multi-batch-dl" },
+          { key: "allinventoryentries.batchallocations.godownname",datalistId: "multi-godown-dl" },
+        ],
+      });
+      showDatalistPreview({ inDataList: dlMulti, inPreviewId: "out-multi" });
+    </script>
+  </body>
+</html>

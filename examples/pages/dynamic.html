@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dynamic load &amp; update · json-to-dom-datalist</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #060d1f; --panel: #0b1629; --panel-alt: #0f1e35;
+        --border: rgba(99,179,237,0.14); --soft: #e2e8f0; --muted: #7fa4c4;
+        --cyan: #38bdf8; --cyan-dim: rgba(56,189,248,0.12);
+        --violet: #a78bfa; --violet-dim: rgba(167,139,250,0.12);
+        --green: #34d399; --green-dim: rgba(52,211,153,0.12);
+        --amber: #fbbf24; --amber-dim: rgba(251,191,36,0.12);
+        --red: #f87171; --red-dim: rgba(248,113,113,0.12);
+      }
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--soft); min-height: 100vh; }
+
+      nav {
+        position: sticky; top: 0; z-index: 100;
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 14px 32px; background: rgba(6,13,31,0.88); backdrop-filter: blur(16px);
+        border-bottom: 1px solid var(--border);
+      }
+      .brand { font-weight: 800; font-size: 1rem; background: linear-gradient(90deg, var(--cyan), var(--violet)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+      .nav-links { display: flex; gap: 24px; }
+      .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+      .nav-links a:hover, .nav-links a.active { color: var(--soft); }
+
+      .wrap { max-width: 960px; margin: 0 auto; padding: 48px 24px 80px; }
+
+      .eyebrow {
+        display: inline-flex; align-items: center; gap: 8px;
+        padding: 5px 13px; border-radius: 999px; background: var(--green-dim);
+        border: 1px solid rgba(52,211,153,0.22); color: var(--green);
+        font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+        text-transform: uppercase; margin-bottom: 16px;
+      }
+      h1 { font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 800; letter-spacing: -0.025em; margin-bottom: 12px; }
+      .sub { color: var(--muted); font-size: 0.97rem; line-height: 1.7; max-width: 680px; margin-bottom: 40px; }
+
+      /* ── Tabs ── */
+      .tabs { display: flex; gap: 4px; margin-bottom: 24px; background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 4px; width: fit-content; }
+      .tab {
+        padding: 8px 18px; border-radius: 10px; border: none;
+        font-family: inherit; font-size: 0.85rem; font-weight: 600;
+        color: var(--muted); background: transparent; cursor: pointer; transition: all 0.2s;
+      }
+      .tab:hover { color: var(--soft); }
+      .tab.active { background: var(--panel-alt); color: var(--soft); box-shadow: 0 2px 8px rgba(0,0,0,0.4); }
+
+      .tab-panel { display: none; }
+      .tab-panel.active { display: block; }
+
+      /* ── Cards ── */
+      .demo-card {
+        background: var(--panel); border: 1px solid var(--border);
+        border-radius: 20px; overflow: hidden; margin-bottom: 28px;
+      }
+      .demo-head {
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 16px 22px; border-bottom: 1px solid var(--border);
+      }
+      .demo-title { font-weight: 600; font-size: 0.95rem; }
+      .badge { padding: 4px 10px; border-radius: 999px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+      .badge.green { background: var(--green-dim); color: var(--green); border: 1px solid rgba(52,211,153,0.2); }
+      .badge.amber { background: var(--amber-dim); color: var(--amber); border: 1px solid rgba(251,191,36,0.2); }
+      .demo-body { padding: 24px; }
+
+      /* ── Fields ── */
+      .fields-row { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 18px; }
+      .field { display: flex; flex-direction: column; gap: 7px; min-width: 200px; flex: 1; }
+      .field label { font-size: 0.74rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; }
+      .field input {
+        background: var(--panel-alt); border: 1px solid var(--border); border-radius: 10px;
+        padding: 10px 13px; color: var(--soft); font-family: inherit; font-size: 0.9rem;
+        outline: none; transition: border-color 0.2s, box-shadow 0.2s; width: 100%;
+      }
+      .field input:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(52,211,153,0.12); }
+      .field input::placeholder { color: rgba(127,164,196,0.4); }
+
+      /* ── Action bar ── */
+      .action-bar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 18px; }
+      .btn {
+        display: inline-flex; align-items: center; gap: 7px;
+        padding: 9px 18px; border-radius: 10px; border: none;
+        font-family: inherit; font-size: 0.85rem; font-weight: 600;
+        cursor: pointer; transition: all 0.2s;
+      }
+      .btn.green { background: var(--green); color: #052216; }
+      .btn.green:hover { opacity: 0.88; }
+      .btn.amber { background: var(--amber); color: #1c1000; }
+      .btn.amber:hover { opacity: 0.88; }
+      .btn.outline {
+        background: transparent; color: var(--muted);
+        border: 1px solid var(--border);
+      }
+      .btn.outline:hover { color: var(--soft); border-color: rgba(99,179,237,0.3); }
+      .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+      .btn .spinner { display: none; width: 14px; height: 14px; border: 2px solid transparent; border-top-color: currentColor; border-radius: 50%; animation: spin 0.65s linear infinite; }
+      .btn.loading .spinner { display: block; }
+      @keyframes spin { to { transform: rotate(360deg); } }
+
+      /* ── Log ── */
+      .log-panel {
+        background: #020810; border: 1px solid var(--border); border-radius: 12px;
+        padding: 14px 16px; font-family: 'Fira Code', monospace;
+        font-size: 0.8rem; line-height: 1.8; color: #6a9abf;
+        overflow-y: auto; max-height: 200px; white-space: pre-wrap;
+      }
+      .log-entry { color: #6a9abf; }
+      .log-entry.ok { color: var(--green); }
+      .log-entry.info { color: var(--cyan); }
+      .log-entry.warn { color: var(--amber); }
+
+      /* ── Result ── */
+      .result-panel {
+        background: #020810; border: 1px solid var(--border); border-radius: 12px;
+        padding: 14px 16px; font-family: 'Fira Code', monospace;
+        font-size: 0.78rem; line-height: 1.8; color: #6a9abf;
+        overflow-x: auto; white-space: pre; min-height: 60px; margin-top: 12px;
+      }
+
+      hr.div { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
+      .section-heading { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
+      .section-sub { color: var(--muted); font-size: 0.88rem; margin-bottom: 20px; }
+      pre.code {
+        background: #020810; border: 1px solid var(--border); border-radius: 14px;
+        padding: 20px 22px; font-family: 'Fira Code', monospace;
+        font-size: 0.8rem; line-height: 1.8; color: #a9c4e0;
+        overflow-x: auto; white-space: pre; margin-bottom: 24px;
+      }
+      .kw { color: var(--violet); } .str { color: var(--green); }
+      .prop { color: var(--cyan); } .num { color: var(--amber); }
+      .cm { color: #4a6a8a; font-style: italic; }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <span class="brand">json-to-dom-datalist</span>
+      <div class="nav-links">
+        <a href="../index.html">Overview</a>
+        <a href="./basic.html">Basic</a>
+        <a href="./topn.html">Top-N</a>
+        <a href="./dynamic.html" class="active">Dynamic load</a>
+      </div>
+    </nav>
+
+    <div class="wrap">
+      <div class="eyebrow">🔄 Example 3</div>
+      <h1>Dynamic load &amp; update</h1>
+      <p class="sub">
+        Real apps don't have static data. Use a <strong>dataProvider</strong> function to lazily
+        fetch rows on demand, or push data directly with <code>update()</code>.
+        Both methods automatically re-render all <code>&lt;datalist&gt;</code> elements.
+      </p>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab active" data-tab="provider">dataProvider + load()</button>
+        <button class="tab" data-tab="update">Direct update()</button>
+      </div>
+
+      <!-- Tab: dataProvider -->
+      <div class="tab-panel active" id="tab-provider">
+        <div class="demo-card">
+          <div class="demo-head">
+            <span class="demo-title">Simulated async fetch with dataProvider</span>
+            <span class="badge green">async · load()</span>
+          </div>
+          <div class="demo-body">
+            <p style="color:var(--muted);font-size:0.88rem;margin-bottom:18px;line-height:1.65">
+              A <code>dataProvider</code> function receives the query object from <code>load({ inQuery })</code>.
+              The DataList calls it, awaits the result, updates its store, and re-renders all datalists.
+            </p>
+
+            <div class="action-bar">
+              <button class="btn green" id="btn-load-sales">
+                <span class="spinner"></span> Load Sales data
+              </button>
+              <button class="btn amber" id="btn-load-purchase">
+                <span class="spinner"></span> Load Purchase data
+              </button>
+              <button class="btn outline" id="btn-clear-provider">Clear</button>
+            </div>
+
+            <div class="fields-row">
+              <div class="field">
+                <label>Stock Item</label>
+                <input list="prov-stock" id="prov-inp-stock" placeholder="Trigger a load first…" />
+              </div>
+              <div class="field">
+                <label>Batch Name</label>
+                <input list="prov-batch" id="prov-inp-batch" placeholder="Trigger a load first…" />
+              </div>
+            </div>
+
+            <div id="prov-mount" style="display:none"></div>
+
+            <div style="font-size:0.75rem;color:var(--muted);margin-bottom:6px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase">Activity log</div>
+            <div class="log-panel" id="prov-log">Waiting for load…</div>
+
+            <div style="font-size:0.75rem;color:var(--muted);margin:14px 0 6px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase">Rendered datalists</div>
+            <div class="result-panel" id="prov-out">(no data loaded yet)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: direct update -->
+      <div class="tab-panel" id="tab-update">
+        <div class="demo-card">
+          <div class="demo-head">
+            <span class="demo-title">Push new data directly with update()</span>
+            <span class="badge amber">sync · update()</span>
+          </div>
+          <div class="demo-body">
+            <p style="color:var(--muted);font-size:0.88rem;margin-bottom:18px;line-height:1.65">
+              When you already have the data in memory, skip the provider and call
+              <code>dl.update({ inData: newRows })</code>. The store is replaced and all datalists re-render instantly.
+            </p>
+
+            <div class="action-bar">
+              <button class="btn green" id="btn-upd-set-a">Dataset A (10 rows)</button>
+              <button class="btn amber" id="btn-upd-set-b">Dataset B (4 rows)</button>
+              <button class="btn outline" id="btn-upd-reset">Reset</button>
+            </div>
+
+            <div class="fields-row">
+              <div class="field">
+                <label>Stock Item</label>
+                <input list="upd-stock" placeholder="Select a dataset above…" />
+              </div>
+              <div class="field">
+                <label>Batch Name</label>
+                <input list="upd-batch" placeholder="Select a dataset above…" />
+              </div>
+              <div class="field">
+                <label>Godown</label>
+                <input list="upd-godown" placeholder="Select a dataset above…" />
+              </div>
+            </div>
+
+            <div id="upd-mount" style="display:none"></div>
+
+            <div style="font-size:0.75rem;color:var(--muted);margin-bottom:6px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase">Rendered datalists after update()</div>
+            <div class="result-panel" id="upd-out">(initial data loaded)</div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="div" />
+      <h2 class="section-heading">Code patterns</h2>
+      <p class="section-sub">Copy-paste ready.</p>
+
+      <pre class="code"><span class="cm">// ── Pattern 1: dataProvider + load() ──────────────────────────────</span>
+<span class="kw">const</span> <span class="prop">dl</span> = <span class="kw">new</span> DataList({
+  <span class="prop">inColumns</span>: columns,
+  <span class="prop">inDataProvider</span>: <span class="kw">async</span> ({ <span class="prop">vchtype</span> } = {}) =&gt; {
+    <span class="kw">const</span> <span class="prop">res</span> = <span class="kw">await</span> fetch(<span class="str">`/api/vouchers?type=${vchtype ?? ""}`</span>);
+    <span class="kw">return</span> res.json();
+  },
+});
+dl.renderStructure({ <span class="prop">inContainerId</span>: <span class="str">"mount"</span> });
+
+<span class="cm">// Fetch sales vouchers — datalists rebuild automatically</span>
+<span class="kw">await</span> dl.load({ <span class="prop">inQuery</span>: { <span class="prop">vchtype</span>: <span class="str">"Sales/CA"</span> } });</pre>
+
+      <pre class="code"><span class="cm">// ── Pattern 2: update() with in-memory data ───────────────────────</span>
+<span class="kw">const</span> <span class="prop">dl</span> = <span class="kw">new</span> DataList({ <span class="prop">inData</span>: [], <span class="prop">inColumns</span>: columns });
+dl.renderStructure({ <span class="prop">inContainerId</span>: <span class="str">"mount"</span> });
+
+<span class="cm">// Later — push data directly, datalists re-render instantly</span>
+dl.update({ <span class="prop">inData</span>: newRows });</pre>
+    </div>
+
+    <script type="module">
+      import {
+        renderExample,
+        showDatalistPreview,
+        sampleData,
+      } from "../shared.js";
+
+      const COLS = [
+        { key: "allinventoryentries.stockitemname",              datalistId: "prov-stock" },
+        { key: "allinventoryentries.batchallocations.batchname", datalistId: "prov-batch" },
+      ];
+      const COLS_UPD = [
+        { key: "allinventoryentries.stockitemname",               datalistId: "upd-stock"  },
+        { key: "allinventoryentries.batchallocations.batchname",  datalistId: "upd-batch"  },
+        { key: "allinventoryentries.batchallocations.godownname", datalistId: "upd-godown" },
+      ];
+
+      // ── Simulated datasets ─────────────────────────────────────────────────
+      const SALES_DATA = sampleData.filter(r => r.vchtype === "Sales/CA");
+      const PURCHASE_DATA = sampleData.filter(r => r.vchtype === "Purchase/CA");
+
+      const fakeDelay = (ms) => new Promise((r) => setTimeout(r, ms));
+
+      // ── Tab: dataProvider ──────────────────────────────────────────────────
+      const logEl = document.getElementById("prov-log");
+      const provOut = document.getElementById("prov-out");
+      let logLines = [];
+      const log = (msg, cls = "") => {
+        logLines.push(`<span class="log-entry ${cls}">[${new Date().toLocaleTimeString()}] ${msg}</span>`);
+        logEl.innerHTML = logLines.join("\n");
+        logEl.scrollTop = logEl.scrollHeight;
+      };
+
+      const providerFn = async ({ vchtype } = {}) => {
+        await fakeDelay(620);
+        if (vchtype === "Sales/CA") return SALES_DATA;
+        if (vchtype === "Purchase/CA") return PURCHASE_DATA;
+        return sampleData;
+      };
+
+      const dlProv = renderExample({
+        targetId: "prov-mount",
+        data: [],
+        columns: COLS,
+        dataProvider: providerFn,
+      });
+      log("DataList created (empty). Click a load button.", "info");
+
+      const setLoading = (btn, on) => {
+        btn.disabled = on;
+        btn.classList.toggle("loading", on);
+      };
+
+      document.getElementById("btn-load-sales").addEventListener("click", async (e) => {
+        const btn = e.currentTarget;
+        setLoading(btn, true);
+        log("load({ inQuery: { vchtype: 'Sales/CA' } }) called…");
+        await dlProv.load({ inQuery: { vchtype: "Sales/CA" } });
+        showDatalistPreview({ inDataList: dlProv, inPreviewId: "prov-out" });
+        log(`Loaded ${SALES_DATA.length} rows → datalists rebuilt.`, "ok");
+        setLoading(btn, false);
+      });
+
+      document.getElementById("btn-load-purchase").addEventListener("click", async (e) => {
+        const btn = e.currentTarget;
+        setLoading(btn, true);
+        log("load({ inQuery: { vchtype: 'Purchase/CA' } }) called…");
+        await dlProv.load({ inQuery: { vchtype: "Purchase/CA" } });
+        showDatalistPreview({ inDataList: dlProv, inPreviewId: "prov-out" });
+        log(`Loaded ${PURCHASE_DATA.length} rows → datalists rebuilt.`, "ok");
+        setLoading(btn, false);
+      });
+
+      document.getElementById("btn-clear-provider").addEventListener("click", () => {
+        dlProv.update({ inData: [] });
+        provOut.textContent = "(cleared)";
+        log("Cleared via update({ inData: [] })", "warn");
+      });
+
+      // ── Tab: direct update() ───────────────────────────────────────────────
+      const updOut = document.getElementById("upd-out");
+
+      const dlUpd = renderExample({
+        targetId: "upd-mount",
+        data: sampleData,
+        columns: COLS_UPD,
+      });
+      showDatalistPreview({ inDataList: dlUpd, inPreviewId: "upd-out" });
+
+      const DATASET_B = [
+        { "allinventoryentries.stockitemname": "PVC Pipe", "allinventoryentries.batchallocations.batchname": "PVC-Batch-X", "allinventoryentries.batchallocations.godownname": "Yard" },
+        { "allinventoryentries.stockitemname": "Iron Rod",  "allinventoryentries.batchallocations.batchname": "IR-Batch-1", "allinventoryentries.batchallocations.godownname": "Yard" },
+        { "allinventoryentries.stockitemname": "Iron Rod",  "allinventoryentries.batchallocations.batchname": "IR-Batch-1", "allinventoryentries.batchallocations.godownname": "Yard" },
+        { "allinventoryentries.stockitemname": "PVC Pipe",  "allinventoryentries.batchallocations.batchname": "PVC-Batch-X","allinventoryentries.batchallocations.godownname": "Store A" },
+      ];
+
+      document.getElementById("btn-upd-set-a").addEventListener("click", () => {
+        dlUpd.update({ inData: sampleData });
+        showDatalistPreview({ inDataList: dlUpd, inPreviewId: "upd-out" });
+      });
+      document.getElementById("btn-upd-set-b").addEventListener("click", () => {
+        dlUpd.update({ inData: DATASET_B });
+        showDatalistPreview({ inDataList: dlUpd, inPreviewId: "upd-out" });
+      });
+      document.getElementById("btn-upd-reset").addEventListener("click", () => {
+        dlUpd.update({ inData: [] });
+        updOut.textContent = "(reset — no data)";
+      });
+
+      // ── Tab switching ──────────────────────────────────────────────────────
+      document.querySelectorAll(".tab").forEach((tab) => {
+        tab.addEventListener("click", () => {
+          document.querySelectorAll(".tab").forEach((t) => t.classList.remove("active"));
+          document.querySelectorAll(".tab-panel").forEach((p) => p.classList.remove("active"));
+          tab.classList.add("active");
+          document.getElementById(`tab-${tab.dataset.tab}`).classList.add("active");
+        });
+      });
+    </script>
+  </body>
+</html>

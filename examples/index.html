@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>json-to-dom-datalist · Examples</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #060d1f;
+        --panel: #0b1629;
+        --panel-alt: #0f1e35;
+        --border: rgba(99,179,237,0.14);
+        --soft: #e2e8f0;
+        --muted: #7fa4c4;
+        --cyan: #38bdf8;
+        --cyan-dim: rgba(56,189,248,0.12);
+        --violet: #a78bfa;
+        --violet-dim: rgba(167,139,250,0.12);
+        --green: #34d399;
+        --green-dim: rgba(52,211,153,0.12);
+        --amber: #fbbf24;
+        --amber-dim: rgba(251,191,36,0.12);
+      }
+
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+      body {
+        font-family: 'Inter', sans-serif;
+        background: var(--bg);
+        color: var(--soft);
+        min-height: 100vh;
+      }
+
+      /* ── Nav ── */
+      nav {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 32px;
+        background: rgba(6,13,31,0.85);
+        backdrop-filter: blur(16px);
+        border-bottom: 1px solid var(--border);
+      }
+      .brand {
+        font-weight: 800;
+        font-size: 1rem;
+        background: linear-gradient(90deg, var(--cyan), var(--violet));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        letter-spacing: -0.01em;
+      }
+      .nav-links { display: flex; gap: 24px; }
+      .nav-links a {
+        color: var(--muted);
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: color 0.2s;
+      }
+      .nav-links a:hover, .nav-links a.active { color: var(--soft); }
+
+      /* ── Layout ── */
+      .wrap { max-width: 1180px; margin: 0 auto; padding: 56px 24px 80px; }
+
+      /* ── Hero ── */
+      .hero { margin-bottom: 56px; }
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 14px;
+        border-radius: 999px;
+        background: var(--cyan-dim);
+        border: 1px solid rgba(56,189,248,0.25);
+        color: var(--cyan);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        margin-bottom: 20px;
+      }
+      h1 {
+        font-size: clamp(2.2rem, 5vw, 3.6rem);
+        font-weight: 800;
+        line-height: 1.1;
+        letter-spacing: -0.03em;
+        margin-bottom: 18px;
+      }
+      h1 span {
+        background: linear-gradient(120deg, var(--cyan) 0%, var(--violet) 60%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .lead {
+        color: var(--muted);
+        font-size: 1.08rem;
+        line-height: 1.75;
+        max-width: 700px;
+        margin-bottom: 32px;
+      }
+
+      /* ── Cards grid ── */
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        margin-bottom: 56px;
+      }
+      @media(max-width:800px) { .cards { grid-template-columns: 1fr; } }
+
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 28px 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        transition: border-color 0.25s, box-shadow 0.25s;
+      }
+      .card:hover {
+        border-color: rgba(56,189,248,0.35);
+        box-shadow: 0 0 40px rgba(56,189,248,0.07);
+      }
+      .card-icon {
+        width: 44px; height: 44px;
+        border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.4rem;
+      }
+      .card-icon.cyan { background: var(--cyan-dim); }
+      .card-icon.violet { background: var(--violet-dim); }
+      .card-icon.green { background: var(--green-dim); }
+      .card-icon.amber { background: var(--amber-dim); }
+
+      .card h3 { font-size: 1.05rem; font-weight: 700; }
+      .card p { color: var(--muted); font-size: 0.9rem; line-height: 1.65; flex: 1; }
+      .card-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 9px 16px;
+        border-radius: 10px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: opacity 0.2s;
+        width: fit-content;
+      }
+      .card-link:hover { opacity: 0.85; }
+      .card-link.cyan { background: var(--cyan); color: #04111f; }
+      .card-link.violet { background: var(--violet); color: #1a0c40; }
+      .card-link.green { background: var(--green); color: #052216; }
+      .card-link.amber { background: var(--amber); color: #1c1000; }
+
+      /* ── How it works section ── */
+      .section-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+      .section-sub { color: var(--muted); font-size: 0.92rem; margin-bottom: 24px; }
+
+      .steps {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px;
+        margin-bottom: 56px;
+      }
+      .step {
+        background: var(--panel-alt);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 20px;
+      }
+      .step-num {
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        color: var(--cyan);
+        margin-bottom: 8px;
+        text-transform: uppercase;
+      }
+      .step h4 { font-size: 0.95rem; font-weight: 600; margin-bottom: 6px; }
+      .step p { color: var(--muted); font-size: 0.85rem; line-height: 1.6; }
+
+      /* ── Live preview ── */
+      .preview-wrap {
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        overflow: hidden;
+        background: var(--panel);
+      }
+      .preview-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px 24px;
+        border-bottom: 1px solid var(--border);
+        gap: 12px;
+      }
+      .preview-head-left { display: flex; align-items: center; gap: 12px; }
+      .dot-row { display: flex; gap: 6px; }
+      .dot { width: 10px; height: 10px; border-radius: 50%; }
+      .dot.r { background: #ff5f57; }
+      .dot.y { background: #febc2e; }
+      .dot.g { background: #28c840; }
+      .preview-label { font-size: 0.8rem; color: var(--muted); }
+
+      .preview-body { padding: 24px; }
+      .preview-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+      @media(max-width:700px) { .preview-cols { grid-template-columns: 1fr; } }
+
+      .form-field { display: flex; flex-direction: column; gap: 6px; }
+      .form-field label { font-size: 0.78rem; color: var(--muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; }
+      .form-field input {
+        background: var(--panel-alt);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 10px 14px;
+        color: var(--soft);
+        font-family: inherit;
+        font-size: 0.95rem;
+        outline: none;
+        transition: border-color 0.2s;
+        width: 100%;
+      }
+      .form-field input:focus { border-color: var(--cyan); }
+      .form-field input::placeholder { color: rgba(127,164,196,0.45); }
+
+      #datalist-preview-wrapper { display: none; }
+
+      .code-block {
+        background: #020810;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 20px 22px;
+        font-family: 'Fira Code', 'Courier New', monospace;
+        font-size: 0.82rem;
+        line-height: 1.7;
+        color: #a9c4e0;
+        overflow-x: auto;
+        margin-top: 20px;
+        white-space: pre;
+      }
+      .code-block .kw { color: var(--violet); }
+      .code-block .str { color: var(--green); }
+      .code-block .num { color: var(--amber); }
+      .code-block .cm { color: #4a6a8a; }
+
+      .toggle-btn {
+        background: var(--panel-alt);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        color: var(--muted);
+        font-size: 0.78rem;
+        padding: 6px 12px;
+        cursor: pointer;
+        font-family: inherit;
+        transition: color 0.2s, border-color 0.2s;
+      }
+      .toggle-btn:hover { color: var(--soft); border-color: var(--cyan); }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <span class="brand">json-to-dom-datalist</span>
+      <div class="nav-links">
+        <a href="./index.html" class="active">Overview</a>
+        <a href="./pages/basic.html">Basic</a>
+        <a href="./pages/topn.html">Top-N</a>
+        <a href="./pages/dynamic.html">Dynamic load</a>
+      </div>
+    </nav>
+
+    <div class="wrap">
+      <!-- Hero -->
+      <header class="hero">
+        <div class="eyebrow">✦ v3 · Live examples</div>
+        <h1>Autocomplete <span>datalists</span><br />from JSON data</h1>
+        <p class="lead">
+          <code style="background:var(--cyan-dim);color:var(--cyan);padding:2px 8px;border-radius:6px;font-size:0.9em">json-to-dom-datalist</code>
+          turns a flat JSON array into native HTML <code style="background:var(--violet-dim);color:var(--violet);padding:2px 8px;border-radius:6px;font-size:0.9em">&lt;datalist&gt;</code>
+          elements — powering instant, zero-dependency autocomplete on any &lt;input&gt;.
+          No framework, no virtualization, no magic.
+        </p>
+      </header>
+
+      <!-- Feature cards -->
+      <div class="cards">
+        <article class="card">
+          <div class="card-icon cyan">⚡</div>
+          <h3>Basic usage</h3>
+          <p>Create a <code>DataList</code>, point it at your JSON data and column keys, and call <code>renderStructure()</code>. Done.</p>
+          <a class="card-link cyan" href="./pages/basic.html">Open basic →</a>
+        </article>
+
+        <article class="card">
+          <div class="card-icon violet">🎯</div>
+          <h3>Top-N filtering</h3>
+          <p>Limit autocomplete noise. Pass <code>topN</code> to surface only the most-frequent values per column — ideal for large datasets.</p>
+          <a class="card-link violet" href="./pages/topn.html">Open top-N →</a>
+        </article>
+
+        <article class="card">
+          <div class="card-icon green">🔄</div>
+          <h3>Dynamic load &amp; update</h3>
+          <p>Wire a <code>dataProvider</code> function, call <code>load()</code> to fetch fresh data, or call <code>update()</code> to push data in directly.</p>
+          <a class="card-link green" href="./pages/dynamic.html">Open dynamic →</a>
+        </article>
+      </div>
+
+      <!-- How it works -->
+      <h2 class="section-title">How it works</h2>
+      <p class="section-sub">Four concepts, zero dependencies.</p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">Step 01</div>
+          <h4>Define columns</h4>
+          <p>Each column maps a <code>key</code> (dot-path) from your data rows to a <code>datalistId</code> used on your &lt;input list=""&gt;.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">Step 02</div>
+          <h4>Create DataList</h4>
+          <p>Instantiate <code>new DataList({ inData, inColumns, inConfig })</code>. The store indexes values immediately.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">Step 03</div>
+          <h4>Render to DOM</h4>
+          <p>Call <code>renderStructure()</code>. A hidden <code>#ks-datalists-wrapper</code> div with all <code>&lt;datalist&gt;</code> elements is injected.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">Step 04</div>
+          <h4>Wire your inputs</h4>
+          <p>Set <code>list="your-datalist-id"</code> on any input. The browser autocomplete works natively — no JS event handlers needed.</p>
+        </div>
+      </div>
+
+      <!-- Live preview -->
+      <h2 class="section-title">Live preview</h2>
+      <p class="section-sub">Type in the fields below — browser native autocomplete is powered by the rendered datalists.</p>
+
+      <div class="preview-wrap">
+        <div class="preview-head">
+          <div class="preview-head-left">
+            <div class="dot-row">
+              <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+            </div>
+            <span class="preview-label">Featured demo · v3 DataList</span>
+          </div>
+          <button class="toggle-btn" id="toggle-preview-btn">Show rendered HTML</button>
+        </div>
+        <div class="preview-body">
+          <!-- The datalists render here (hidden wrapper) -->
+          <div id="datalist-mount"></div>
+
+          <div class="preview-cols">
+            <div class="form-field">
+              <label>Stock Item</label>
+              <input list="stock-item-datalist" id="inp-stock" placeholder="Type to autocomplete…" />
+            </div>
+            <div class="form-field">
+              <label>Batch Name</label>
+              <input list="batch-name-datalist" id="inp-batch" placeholder="Type to autocomplete…" />
+            </div>
+            <div class="form-field">
+              <label>Godown</label>
+              <input list="godown-datalist" id="inp-godown" placeholder="Type to autocomplete…" />
+            </div>
+            <div class="form-field">
+              <label>Voucher Type</label>
+              <input list="vchtype-datalist" id="inp-vchtype" placeholder="Type to autocomplete…" />
+            </div>
+          </div>
+
+          <div id="datalist-preview-wrapper">
+            <pre class="code-block" id="datalist-preview-code"></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+      import {
+        renderExample,
+        showDatalistPreview,
+        sampleData,
+        stockColumn,
+        batchColumn,
+        godownColumn,
+        vchtypeColumn,
+      } from "./shared.js";
+
+      const dl = renderExample({
+        targetId: "datalist-mount",
+        data: sampleData,
+        columns: [stockColumn, batchColumn, godownColumn, vchtypeColumn],
+      });
+
+      const wrapper = document.getElementById("datalist-preview-wrapper");
+      const btn = document.getElementById("toggle-preview-btn");
+      btn.addEventListener("click", () => {
+        const visible = wrapper.style.display === "block";
+        wrapper.style.display = visible ? "none" : "block";
+        btn.textContent = visible ? "Show rendered HTML" : "Hide rendered HTML";
+        if (!visible) {
+          showDatalistPreview({ inDataList: dl, inPreviewId: "datalist-preview-code" });
+        }
+      });
+    </script>
+  </body>
+</html>

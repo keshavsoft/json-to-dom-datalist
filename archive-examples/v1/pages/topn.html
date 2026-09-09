@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Top-N filtering · json-to-dom-datalist</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #060d1f; --panel: #0b1629; --panel-alt: #0f1e35;
+        --border: rgba(99,179,237,0.14); --soft: #e2e8f0; --muted: #7fa4c4;
+        --cyan: #38bdf8; --cyan-dim: rgba(56,189,248,0.12);
+        --violet: #a78bfa; --violet-dim: rgba(167,139,250,0.12);
+        --green: #34d399; --green-dim: rgba(52,211,153,0.12);
+        --amber: #fbbf24; --amber-dim: rgba(251,191,36,0.12);
+      }
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--soft); min-height: 100vh; }
+
+      nav {
+        position: sticky; top: 0; z-index: 100;
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 14px 32px; background: rgba(6,13,31,0.88); backdrop-filter: blur(16px);
+        border-bottom: 1px solid var(--border);
+      }
+      .brand { font-weight: 800; font-size: 1rem; background: linear-gradient(90deg, var(--cyan), var(--violet)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+      .nav-links { display: flex; gap: 24px; }
+      .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+      .nav-links a:hover, .nav-links a.active { color: var(--soft); }
+
+      .wrap { max-width: 960px; margin: 0 auto; padding: 48px 24px 80px; }
+
+      .eyebrow {
+        display: inline-flex; align-items: center; gap: 8px;
+        padding: 5px 13px; border-radius: 999px; background: var(--violet-dim);
+        border: 1px solid rgba(167,139,250,0.22); color: var(--violet);
+        font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+        text-transform: uppercase; margin-bottom: 16px;
+      }
+      h1 { font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 800; letter-spacing: -0.025em; margin-bottom: 12px; }
+      .sub { color: var(--muted); font-size: 0.97rem; line-height: 1.7; max-width: 680px; margin-bottom: 40px; }
+
+      /* ── Slider control ── */
+      .slider-row {
+        display: flex; align-items: center; gap: 16px; margin-bottom: 28px;
+        background: var(--panel); border: 1px solid var(--border);
+        border-radius: 16px; padding: 18px 22px;
+      }
+      .slider-label { font-size: 0.85rem; color: var(--muted); font-weight: 500; white-space: nowrap; }
+      input[type="range"] {
+        flex: 1; accent-color: var(--violet);
+        -webkit-appearance: none; height: 4px;
+        background: var(--panel-alt); border-radius: 99px; outline: none; cursor: pointer;
+      }
+      .slider-val {
+        min-width: 56px; text-align: center;
+        background: var(--violet-dim); color: var(--violet);
+        border: 1px solid rgba(167,139,250,0.2);
+        border-radius: 8px; padding: 4px 10px;
+        font-size: 0.88rem; font-weight: 700; font-family: 'Fira Code', monospace;
+      }
+
+      /* ── Side-by-side comparison ── */
+      .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 32px; }
+      @media(max-width: 660px) { .compare-grid { grid-template-columns: 1fr; } }
+
+      .panel {
+        background: var(--panel); border: 1px solid var(--border);
+        border-radius: 18px; overflow: hidden;
+      }
+      .panel-head {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 14px 18px; border-bottom: 1px solid var(--border);
+      }
+      .panel-title { font-size: 0.88rem; font-weight: 600; }
+      .badge { padding: 3px 9px; border-radius: 999px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+      .badge.off { background: var(--cyan-dim); color: var(--cyan); border: 1px solid rgba(56,189,248,0.18); }
+      .badge.on { background: var(--violet-dim); color: var(--violet); border: 1px solid rgba(167,139,250,0.18); }
+      .panel-body { padding: 18px; }
+
+      .field { display: flex; flex-direction: column; gap: 7px; margin-bottom: 12px; }
+      .field label { font-size: 0.74rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; }
+      .field input {
+        background: var(--panel-alt); border: 1px solid var(--border); border-radius: 10px;
+        padding: 10px 13px; color: var(--soft); font-family: inherit; font-size: 0.9rem;
+        outline: none; transition: border-color 0.2s, box-shadow 0.2s; width: 100%;
+      }
+      .field input:focus { border-color: var(--violet); box-shadow: 0 0 0 3px rgba(167,139,250,0.12); }
+      .field input::placeholder { color: rgba(127,164,196,0.4); }
+
+      .count-bar {
+        display: flex; align-items: center; gap: 8px; margin-top: 4px;
+        font-size: 0.78rem; color: var(--muted);
+      }
+      .count-num { color: var(--soft); font-weight: 700; font-family: 'Fira Code', monospace; }
+
+      .result-panel {
+        background: #020810; border: 1px solid var(--border); border-radius: 12px;
+        padding: 14px 16px; font-family: 'Fira Code', monospace;
+        font-size: 0.78rem; line-height: 1.8; color: #6a9abf;
+        overflow-x: auto; white-space: pre; margin-top: 12px; min-height: 60px;
+      }
+
+      hr.div { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
+      .section-heading { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
+      .section-sub { color: var(--muted); font-size: 0.88rem; margin-bottom: 20px; }
+
+      pre.code {
+        background: #020810; border: 1px solid var(--border); border-radius: 14px;
+        padding: 20px 22px; font-family: 'Fira Code', monospace;
+        font-size: 0.8rem; line-height: 1.8; color: #a9c4e0;
+        overflow-x: auto; white-space: pre;
+      }
+      .kw { color: var(--violet); } .str { color: var(--green); }
+      .prop { color: var(--cyan); } .num { color: var(--amber); }
+      .cm { color: #4a6a8a; font-style: italic; }
+
+      .info-strip {
+        display: flex; gap: 10px; align-items: flex-start;
+        background: var(--amber-dim); border: 1px solid rgba(251,191,36,0.18);
+        border-radius: 12px; padding: 14px 16px; margin-bottom: 28px;
+        font-size: 0.86rem; color: var(--amber); line-height: 1.6;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <span class="brand">json-to-dom-datalist</span>
+      <div class="nav-links">
+        <a href="../index.html">Overview</a>
+        <a href="./basic.html">Basic</a>
+        <a href="./topn.html" class="active">Top-N</a>
+        <a href="./dynamic.html">Dynamic load</a>
+      </div>
+    </nav>
+
+    <div class="wrap">
+      <div class="eyebrow">🎯 Example 2</div>
+      <h1>Top-N filtering</h1>
+      <p class="sub">
+        For large datasets, showing every unique value in a datalist creates noise.
+        Pass <code>topN</code> in your config (or column definition) to surface only the
+        <em>most frequently occurring</em> values — keeping autocomplete lean and useful.
+      </p>
+
+      <div class="info-strip">
+        <span>⚠️</span>
+        <span>Use the slider to change <code>topN</code> live. The side-by-side panels show how the same data looks with and without the limit. Drag it to <strong>0</strong> for unlimited.</span>
+      </div>
+
+      <!-- Slider -->
+      <div class="slider-row">
+        <span class="slider-label">topN (limit per column)</span>
+        <input type="range" id="topn-slider" min="0" max="10" value="3" step="1" />
+        <span class="slider-val" id="topn-val">3</span>
+      </div>
+
+      <!-- Side-by-side -->
+      <div class="compare-grid">
+        <div class="panel">
+          <div class="panel-head">
+            <span class="panel-title">Without Top-N</span>
+            <span class="badge off">topN = 0</span>
+          </div>
+          <div class="panel-body">
+            <div class="field">
+              <label>Stock Item</label>
+              <input list="topn-off-stock" placeholder="All values…" />
+            </div>
+            <div class="field">
+              <label>Batch Name</label>
+              <input list="topn-off-batch" placeholder="All values…" />
+            </div>
+            <div id="mount-off" style="display:none"></div>
+            <div class="count-bar">Options: <span class="count-num" id="count-off">–</span></div>
+            <div class="result-panel" id="out-off">(loading…)</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <span class="panel-title">With Top-N</span>
+            <span class="badge on" id="topn-badge">topN = 3</span>
+          </div>
+          <div class="panel-body">
+            <div class="field">
+              <label>Stock Item</label>
+              <input list="topn-on-stock" placeholder="Top values only…" />
+            </div>
+            <div class="field">
+              <label>Batch Name</label>
+              <input list="topn-on-batch" placeholder="Top values only…" />
+            </div>
+            <div id="mount-on" style="display:none"></div>
+            <div class="count-bar">Options: <span class="count-num" id="count-on">–</span></div>
+            <div class="result-panel" id="out-on">(loading…)</div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="div" />
+      <h2 class="section-heading">Code</h2>
+      <p class="section-sub">Pass <code>topN</code> via config or inline on the column.</p>
+      <pre class="code"><span class="cm">// Via config (applies to all columns)</span>
+<span class="kw">const</span> <span class="prop">dl</span> = <span class="kw">new</span> DataList({
+  <span class="prop">inData</span>: data,
+  <span class="prop">inColumns</span>: columns,
+  <span class="prop">inConfig</span>: {
+    <span class="prop">datalist</span>: { <span class="prop">topN</span>: <span class="num">3</span> },   <span class="cm">// show only top 3 per column</span>
+  },
+});
+
+<span class="cm">// Or per-column override</span>
+<span class="kw">const</span> <span class="prop">columns</span> = [
+  { <span class="prop">key</span>: <span class="str">"stockitemname"</span>, <span class="prop">datalistId</span>: <span class="str">"stock-dl"</span>, <span class="prop">topN</span>: <span class="num">5</span> },
+  { <span class="prop">key</span>: <span class="str">"batchname"</span>,     <span class="prop">datalistId</span>: <span class="str">"batch-dl"</span>  },   <span class="cm">// inherits global topN</span>
+];</pre>
+    </div>
+
+    <script type="module">
+      import { renderExample, showDatalistPreview, sampleData } from "../shared.js";
+
+      const COLS_OFF = [
+        { key: "allinventoryentries.stockitemname",              datalistId: "topn-off-stock" },
+        { key: "allinventoryentries.batchallocations.batchname", datalistId: "topn-off-batch" },
+      ];
+
+      // No-limit render (once)
+      const dlOff = renderExample({
+        targetId: "mount-off",
+        data: sampleData,
+        columns: COLS_OFF,
+      });
+      showDatalistPreview({ inDataList: dlOff, inPreviewId: "out-off" });
+      const offOptions = dlOff.element?.querySelectorAll("option") ?? [];
+      document.getElementById("count-off").textContent = offOptions.length;
+
+      // Top-N render (reactive to slider)
+      let dlOn = null;
+
+      const buildOn = (topN) => {
+        // Remove old mount children
+        const mount = document.getElementById("mount-on");
+        mount.innerHTML = "";
+
+        dlOn = renderExample({
+          targetId: "mount-on",
+          data: sampleData,
+          columns: [
+            { key: "allinventoryentries.stockitemname",              datalistId: "topn-on-stock" },
+            { key: "allinventoryentries.batchallocations.batchname", datalistId: "topn-on-batch" },
+          ],
+          config: { datalist: { topN } },
+        });
+
+        showDatalistPreview({ inDataList: dlOn, inPreviewId: "out-on" });
+        const onOptions = dlOn.element?.querySelectorAll("option") ?? [];
+        document.getElementById("count-on").textContent = onOptions.length;
+      };
+
+      buildOn(3);
+
+      const slider = document.getElementById("topn-slider");
+      const valLabel = document.getElementById("topn-val");
+      const badge = document.getElementById("topn-badge");
+
+      slider.addEventListener("input", () => {
+        const v = Number(slider.value);
+        valLabel.textContent = v;
+        badge.textContent = `topN = ${v}`;
+        buildOn(v);
+      });
+    </script>
+  </body>
+</html>
