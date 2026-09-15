@@ -11,13 +11,12 @@ class DataList {
         config = {},
         dataProvider = null,
         targetContainerId = "datalist-container",
-        inData,
         inColumns,
         inConfig,
         inDataProvider,
         inTargetContainerId
     } = {}) {
-        const localData = inData ?? data;
+        const localData = data;
         const localColumns = inColumns ?? columns;
         const localConfig = inConfig ?? config;
         const localDataProvider = inDataProvider ?? dataProvider;
