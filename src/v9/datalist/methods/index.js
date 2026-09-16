@@ -1,3 +1,8 @@
+import { compile } from "../../../../node_modules/json-to-spec/index.js";
+import { buildSpecElement } from "../../../../node_modules/@keshavsoft/json-to-dom/index.js";
+
+// import { compile } from "json-to-spec";
+
 // import { buildSpec } from "./buildSpec.js";
 import { renderStructure } from "./renderStructure.js";
 import structureJson from './structure.json' with {type: 'json'};
@@ -28,11 +33,13 @@ const createMethods = ({ inDataList } = {}) => {
     const localRenderStructure = ({ inContainerId, inContainer, targetContainerId } = {}) => {
         // console.log("structureArray : ", structureArray, distinctData);
 
-        const specAsJsonToDom = window.ks['json-to-spec'].compile(structureArray, distinctData, true);
+        // const specAsJsonToDom = window.ks['json-to-spec'].compile(structureArray, distinctData, true);
+        const specAsJsonToDom = compile(structureArray, distinctData, true);
 
-        // console.log("specAsJsonToDom : ", specAsJsonToDom);
+        console.log("specAsJsonToDom--------: ", compile, specAsJsonToDom);
 
-        window.ks['json-to-dom'].buildSpecElement({ spec: specAsJsonToDom, targetHtmlId: "datalist-container" });
+        // window.ks['json-to-dom'].buildSpecElement({ spec: specAsJsonToDom, targetHtmlId: "datalist-container" });
+        buildSpecElement({ spec: specAsJsonToDom, targetHtmlId: "datalist-container" });
 
         return specAsJsonToDom;
     };

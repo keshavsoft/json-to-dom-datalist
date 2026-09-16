@@ -1,3 +1,5 @@
+// import "json-to-spec";
+
 import data from './data.json' with {type: 'json'};
 import columns from './columns.json' with {type: 'json'};
 import datalistConfig from "./datalist/config.json" with { type: "json" };
