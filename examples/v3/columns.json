@@ -1,0 +1,17 @@
+[
+    {
+        "key": "LedgerName",
+        "label": "LedgerName",
+        "type": "string"
+    },
+    {
+        "key": "LedgerParentName",
+        "label": "LedgerParentName",
+        "type": "string"
+    },
+    {
+        "key": "LedgerType",
+        "label": "LedgerType",
+        "type": "string"
+    }
+]
