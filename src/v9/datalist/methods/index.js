@@ -2,11 +2,6 @@
 import { renderStructure } from "./renderStructure.js";
 import structureJson from './structure.json' with {type: 'json'};
 
-const methods = {
-    buildSpec,
-    renderStructure
-};
-
 const createMethods = ({ inDataList } = {}) => {
     const localDataList = inDataList;
     // const k1 = buildSpec({ inDataList: localDataList });
@@ -48,5 +43,7 @@ const createMethods = ({ inDataList } = {}) => {
     };
 };
 
-export { methods, createMethods, buildSpec, renderStructure };
-export default methods;
+export {
+    createMethods,
+    renderStructure
+};
