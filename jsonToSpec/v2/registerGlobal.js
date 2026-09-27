@@ -8,14 +8,14 @@ export const registerGlobal = (inFuncDefinition) => {
     if (typeof globalThis === "undefined" || !inFuncDefinition) return;
 
     globalThis.ks ??= {};
-    globalThis.ks["json-to-dom-datalist"] = {
+    globalThis.ks["json-to-spec"] = {
         meta,
-        DataList: inFuncDefinition
+        buildSpecElement: inFuncDefinition
     };
 
-    globalThis.ks.jsonToDomDatalist ??= {
+    globalThis.ks.jsonToSpec = {
         meta,
-        DataList: inFuncDefinition
+        buildSpecElement: inFuncDefinition
     };
 };
 

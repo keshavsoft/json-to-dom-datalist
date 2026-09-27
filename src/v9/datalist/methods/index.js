@@ -1,4 +1,4 @@
-import { compile } from "../../../../node_modules/json-to-spec/index.js";
+import compile from "../../../../node_modules/json-to-spec/src/index.js";
 import { buildSpecElement } from "../../../../node_modules/@keshavsoft/json-to-dom/index.js";
 
 // import { compile } from "json-to-spec";
@@ -9,9 +9,7 @@ import structureJson from './structure.json' with {type: 'json'};
 
 const createMethods = ({ inDataList } = {}) => {
     const localDataList = inDataList;
-    // const k1 = buildSpec({ inDataList: localDataList });
-    const distinctData = inDataList.store.library.distinctData
-    // console.log("k1 : ", distinctData);
+    const distinctData = localDataList.store.library.distinctData
 
     const structureArray = [];
 
@@ -23,29 +21,18 @@ const createMethods = ({ inDataList } = {}) => {
         structureArray.push(newClone);
     };
 
-    const localBuildSpec = () => {
-        const specAsJsonToDom = window.ks['json-to-spec'].compile(structureArray, distinctData, true);
+    const localRenderStructure = ({ targetContainerId } = {}) => {
+        const specAsJsonToDom = compile({
+            specJson: structureArray,
+            dataJson: distinctData
+        });
 
-        return specAsJsonToDom;
-        // return buildSpec({ inDataList: localDataList });
-    };
-
-    const localRenderStructure = ({ inContainerId, inContainer, targetContainerId } = {}) => {
-        // console.log("structureArray : ", structureArray, distinctData);
-
-        // const specAsJsonToDom = window.ks['json-to-spec'].compile(structureArray, distinctData, true);
-        const specAsJsonToDom = compile(structureArray, distinctData, true);
-
-        console.log("specAsJsonToDom--------: ", compile, specAsJsonToDom);
-
-        // window.ks['json-to-dom'].buildSpecElement({ spec: specAsJsonToDom, targetHtmlId: "datalist-container" });
-        buildSpecElement({ spec: specAsJsonToDom, targetHtmlId: "datalist-container" });
+        buildSpecElement({ spec: specAsJsonToDom, targetHtmlId: targetContainerId });
 
         return specAsJsonToDom;
     };
 
     return {
-        buildSpec: localBuildSpec,
         renderStructure: localRenderStructure
     };
 };

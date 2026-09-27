@@ -1,48 +1,52 @@
-const N = {
+const w = {
   version: "v9.0",
   description: "build store from data and render to DOM uses json-to-spec, json-to-dom under the hood"
-}, v = (n) => {
-  typeof globalThis > "u" || !n || (globalThis.ks ?? (globalThis.ks = {}), globalThis.ks["json-to-dom-datalist"] = {
-    meta: N,
-    DataList: n
-  });
-}, y = ({ inData: n = [], inColumns: e = [], inConfig: t = {}, inTopN: o } = {}) => {
-  const l = n, a = e, s = t, r = o;
+}, L = (e) => {
+  var o;
+  typeof globalThis > "u" || !e || (globalThis.ks ?? (globalThis.ks = {}), globalThis.ks["json-to-dom-datalist"] = {
+    meta: w,
+    DataList: e
+  }, (o = globalThis.ks).jsonToDomDatalist ?? (o.jsonToDomDatalist = {
+    meta: w,
+    DataList: e
+  }));
+}, C = ({ inData: e = [], inColumns: o = [], inConfig: t = {}, inTopN: n } = {}) => {
+  const l = e, a = o, r = t, s = n;
   return {
     originalData: Array.isArray(l) ? typeof structuredClone == "function" ? structuredClone(l) : JSON.parse(JSON.stringify(l)) : [],
     columns: Array.isArray(a) ? a : [],
-    config: s || {},
-    topN: r
+    config: r || {},
+    topN: s
   };
-}, j = ({ inColumnsCatalog: n = [], inColumnKeys: e = [] } = {}) => {
-  const t = n, o = e;
-  if (Array.isArray(o) && o.length > 0) {
-    const l = new Map((Array.isArray(t) ? t : []).map((r) => [r.key, r])), a = [], s = [];
-    for (const r of o) {
-      const i = l.get(r);
-      i ? s.push(i) : a.push(r);
+}, E = ({ inColumnsCatalog: e = [], inColumnKeys: o = [] } = {}) => {
+  const t = e, n = o;
+  if (Array.isArray(n) && n.length > 0) {
+    const l = new Map((Array.isArray(t) ? t : []).map((s) => [s.key, s])), a = [], r = [];
+    for (const s of n) {
+      const i = l.get(s);
+      i ? r.push(i) : a.push(s);
     }
     return a.length > 0 && console.warn(
-      `[json-to-dom-datalist] Warning: Config requested columns [${a.map((r) => `"${r}"`).join(", ")}] that do not exist in the columns catalog.`
-    ), s;
+      `[json-to-dom-datalist] Warning: Config requested columns [${a.map((s) => `"${s}"`).join(", ")}] that do not exist in the columns catalog.`
+    ), r;
   }
   return Array.isArray(t) ? t : [];
 };
-class L {
-  constructor({ inData: e = [], inColumns: t = [], inConfig: o = {}, inTopN: l } = {}) {
-    const a = e, s = t, r = o, i = l;
-    this.source = y({
+class k {
+  constructor({ inData: o = [], inColumns: t = [], inConfig: n = {}, inTopN: l } = {}) {
+    const a = o, r = t, s = n, i = l;
+    this.source = C({
       inData: a,
-      inColumns: s,
-      inConfig: r,
+      inColumns: r,
+      inConfig: s,
       inTopN: i
     });
   }
-  _buildSource(e) {
-    return y(e);
+  _buildSource(o) {
+    return C(o);
   }
-  _resolveActiveColumns(e) {
-    return j(e);
+  _resolveActiveColumns(o) {
+    return E(o);
   }
   get rawData() {
     return this.source.originalData;
@@ -51,76 +55,76 @@ class L {
     return this.source.config;
   }
 }
-const k = ({ inData: n } = {}) => {
-  const e = n;
-  if (e == null)
+const O = ({ inData: e } = {}) => {
+  const o = e;
+  if (o == null)
     return [];
   if (typeof structuredClone == "function")
     try {
-      return structuredClone(e);
+      return structuredClone(o);
     } catch {
     }
   try {
-    return JSON.parse(JSON.stringify(e));
+    return JSON.parse(JSON.stringify(o));
   } catch {
-    return Array.isArray(e) ? [...e] : { ...e };
+    return Array.isArray(o) ? [...o] : { ...o };
   }
-}, E = ({
-  inData: n = [],
-  inActiveColumns: e = []
-} = {}) => k({
-  inData: n
+}, V = ({
+  inData: e = [],
+  inActiveColumns: o = []
+} = {}) => O({
+  inData: e
 }).map((l) => {
   let a = {};
-  return e.forEach((s) => {
-    const r = typeof s == "string" ? s : (s == null ? void 0 : s.key) || "";
-    r && (a[r] = l[r]);
+  return o.forEach((r) => {
+    const s = typeof r == "string" ? r : (r == null ? void 0 : r.key) || "";
+    s && (a[s] = l[s]);
   }), a;
-}), O = ({
-  inStateData: n = [],
-  inActiveColumns: e = []
+}), B = ({
+  inStateData: e = [],
+  inActiveColumns: o = []
 } = {}) => {
-  const t = n;
-  let o = {};
-  return e.forEach((l) => {
+  const t = e;
+  let n = {};
+  return o.forEach((l) => {
     const a = typeof l == "string" ? l : (l == null ? void 0 : l.key) || "";
     if (!a) return;
-    const s = t.map((i) => i[a]), r = [...new Set(s)];
-    o[a] = r;
-  }), o;
-}, I = ({
-  inSource: n = {}
+    const r = t.map((i) => i[a]), s = [...new Set(r)];
+    n[a] = s;
+  }), n;
+}, P = ({
+  inSource: e = {}
 } = {}) => {
-  var a, s, r, i, c;
-  const e = ((s = (a = n == null ? void 0 : n.config) == null ? void 0 : a.datalist) == null ? void 0 : s.columns) || ((r = n == null ? void 0 : n.config) == null ? void 0 : r.columns) || (n == null ? void 0 : n.columns) || [], t = E({
-    inData: n == null ? void 0 : n.originalData,
-    inActiveColumns: e
-  }), o = O({
+  var a, r, s, i, c;
+  const o = ((r = (a = e == null ? void 0 : e.config) == null ? void 0 : a.datalist) == null ? void 0 : r.columns) || ((s = e == null ? void 0 : e.config) == null ? void 0 : s.columns) || (e == null ? void 0 : e.columns) || [], t = V({
+    inData: e == null ? void 0 : e.originalData,
+    inActiveColumns: o
+  }), n = B({
     inStateData: t,
-    inActiveColumns: e
-  }), l = ((c = (i = n == null ? void 0 : n.config) == null ? void 0 : i.datalist) == null ? void 0 : c.topN) ?? (n == null ? void 0 : n.topN) ?? 0;
+    inActiveColumns: o
+  }), l = ((c = (i = e == null ? void 0 : e.config) == null ? void 0 : i.datalist) == null ? void 0 : c.topN) ?? (e == null ? void 0 : e.topN) ?? 0;
   return {
-    activeColumns: e,
+    activeColumns: o,
     stateData: t,
-    distinctData: o,
+    distinctData: n,
     topN: l
   };
-}, V = ({
-  inData: n = []
-} = {}) => Array.isArray(n) ? n : [];
-class B extends L {
+}, I = ({
+  inData: e = []
+} = {}) => Array.isArray(e) ? e : [];
+class H extends k {
   constructor({
-    inData: e = [],
+    inData: o = [],
     inColumns: t = [],
-    inConfig: o = {},
+    inConfig: n = {},
     inTopN: l = 0
   } = {}) {
     super({
-      inData: e,
+      inData: o,
       inColumns: t,
-      inConfig: o,
+      inConfig: n,
       inTopN: l
-    }), this.library = I({
+    }), this.library = P({
       inSource: this.source
     });
   }
@@ -133,174 +137,226 @@ class B extends L {
   get topN() {
     return this.library.topN;
   }
-  updateData({ inData: e = [] } = {}) {
-    return this.library.stateData = V({
-      inData: e
+  updateData({ inData: o = [] } = {}) {
+    return this.library.stateData = I({
+      inData: o
     }), this.library.stateData;
   }
 }
-const J = {
-  version: "18.0.0",
-  name: "json-to-spec/v18",
-  description: "Minimalist 2-layer compiler: pure value replace + jsonToSpec iterate"
-}, P = (n) => {
-  typeof globalThis > "u" || !n || (globalThis.ks ?? (globalThis.ks = {}), globalThis.ks["json-to-spec"] = {
-    meta: J,
-    compile: n
+const T = {
+  version: "v24.0",
+  description: "Pure spec engine no document at all"
+}, M = (e) => {
+  typeof globalThis > "u" || !e || (globalThis.ks ?? (globalThis.ks = {}), globalThis.ks["json-to-spec"] = {
+    meta: T,
+    buildSpecElement: e
+  }, globalThis.ks.jsonToSpec = {
+    meta: T,
+    buildSpecElement: e
   });
-}, A = ({ inData: n, inDataKey: e }) => {
-  const t = e;
-  if (t === "") return n;
-  let o = n[t];
-  return t.includes(".") && (o = t.split(".").reduce(
-    (s, r) => s == null ? void 0 : s[r],
-    n
-  )), o;
-}, M = ({
-  inNode: n,
-  inData: e
-} = {}) => {
-  const t = n, o = e;
-  if (!(t != null && t.textContent)) return "no-textContent";
-  if (typeof t.textContent != "string") return "not-a-string";
-  if (!t.textContent.includes("${")) return "no-template-token";
-  const l = t.textContent.replace(/^\$\{/, "").replace(/\}$/, "");
-  t.textContent = A({
-    inData: o,
-    inDataKey: l
-  });
-}, K = ({
-  inNode: n,
-  inData: e
-} = {}) => {
-  const t = n, o = e;
-  if ("attributes" in t) {
-    const l = Object.fromEntries(
-      Object.entries(t.attributes || {}).map(([a, s]) => [
-        a,
-        typeof s == "string" && s.includes("${") ? A({
-          inData: o,
-          inDataKey: s.replace(/^\$\{/, "").replace(/\}$/, "")
-        }) : s
-      ])
-    );
-    t.attributes = { ...l };
-  }
-}, R = ({
-  inNode: n,
-  inData: e
-} = {}) => {
-  const t = n, o = e;
-  M({ inNode: t, inData: o }), K({ inNode: t, inData: o });
-}, H = ({
-  inTemplate: n,
-  inSourceValues: e
-} = {}) => e.map((l) => {
-  const a = structuredClone(n);
-  return w({
-    inNode: a,
-    inData: l,
-    inOperation: "replace"
-  });
-}), q = ({
-  inNode: n,
-  inData: e
-} = {}) => {
-  const t = n, o = e;
-  if (!("jsonToSpec" in t) || !("operation" in t.jsonToSpec) || t.jsonToSpec.operation !== "iterate" || !("source" in t.jsonToSpec)) return;
-  const l = o[t.jsonToSpec.source], a = H({
-    inTemplate: t.jsonToSpec.template,
-    inSourceValues: l
-  });
-  t.children = a;
-}, b = ({ inNode: n, inData: e, inOperation: t }) => {
-  const o = n, l = t;
-  if (Array.isArray(o)) {
-    const a = [];
-    for (const s of o) {
-      const r = w({
-        inNode: s,
-        inData: e,
-        inOperation: l
-      });
-      Array.isArray(r) ? a.push(...r) : r != null && a.push(r);
+}, q = ({ inSpec: e }) => {
+  const o = e;
+  return o == null;
+}, F = ({ inSpec: e }) => typeof Node < "u" && e instanceof Node, D = ({ inSpecJson: e }) => {
+  const o = e;
+  return Array.isArray(o);
+}, K = ({ inArray: e = [], inShowLog: o = !1, inDataJson: t }) => {
+  const n = e, l = o, a = t;
+  return Array.isArray(n) ? n.map((r) => p({
+    inSpecJson: r,
+    inShowLog: l,
+    inDataJson: a
+  })).flat().filter(Boolean) : [];
+}, f = ({ inTemplate: e, inData: o, inRowIndex: t }) => {
+  if (Number.isFinite(t)) {
+    debugger;
+    console.log("vvvvvvvvvvvvvv : ", t);
+    let n = W({ inTemplate: e, inRowIndex: t });
+    return A({ inTemplate: n, inData: o });
+  } else
+    return A({ inTemplate: e, inData: o });
+}, A = ({ inTemplate: e, inData: o }) => {
+  const t = e, n = o;
+  return typeof t != "string" ? t : t.replace(/\$\{([^}]+)\}/g, (l, a) => {
+    const r = a.trim().split(".");
+    let s = n;
+    for (const i of r) {
+      if (s == null) return "";
+      s = s[i];
     }
-    return a;
+    return s == null ? "" : typeof s == "string" || typeof s == "number" || typeof s == "boolean" ? String(s ?? "") : s;
+  });
+}, W = ({ inTemplate: e, inRowIndex: o }) => {
+  const t = e, n = o;
+  return t.replace(/\#\{([^}]+)\}/g, (l, a) => {
+    const r = a.trim().split(".");
+    let s = n;
+    console.log("aaaaaaa : ", o, e, r);
+    for (const i of r) {
+      if (s == null) return "";
+      s = s[i];
+    }
+    return s === null || typeof s == "string" || typeof s == "number" || typeof s == "boolean" ? String(s ?? "") : s;
+  });
+}, R = ({ inSpec: e, inData: o, inShowLog: t }) => {
+  const n = e, l = o, a = t;
+  return "textContent" in n && (n.textContent = f({ inTemplate: n.textContent, inData: l })), "attributes" in n && typeof n.attributes == "object" && n.attributes && (n.attributes = Object.fromEntries(
+    Object.entries(n.attributes).map(([r, s]) => [
+      r,
+      f({ inTemplate: s, inData: l })
+    ])
+  )), Array.isArray(n.children) && (n.children = n.children.map(
+    (r) => p({
+      inSpecJson: r,
+      inShowLog: a,
+      inDataJson: l
+    })
+  )), n;
+}, z = ({ inSpec: e, inData: o }) => {
+  const t = e, n = o, l = n.value;
+  return D({ inSpecJson: l }) ? (t.children = [{
+    tagName: "button",
+    attributes: {
+      class: "btn btn-primary btn-sm"
+    },
+    textContent: l.length
+  }], delete t.textContent, t) : typeof l == "object" && l !== null && l.tagName ? (t.children = [l], delete t.textContent, t) : ("textContent" in t && (t.textContent = f({ inTemplate: t.textContent, inData: n })), "attributes" in t && typeof t.attributes == "object" && t.attributes && (t.attributes = Object.fromEntries(
+    Object.entries(t.attributes).map(([a, r]) => [
+      a,
+      f({ inTemplate: r, inData: n })
+    ])
+  )), t);
+}, G = ({ inSpec: e, inData: o }) => {
+  const t = e, n = o;
+  return "textContent" in t && (t.textContent === "${}" ? t.textContent = n : typeof t.textContent == "string" && (t.textContent = t.textContent.replaceAll("${}", () => n))), "attributes" in t && typeof t.attributes == "object" && t.attributes && (t.attributes = Object.fromEntries(
+    Object.entries(t.attributes).map(([l, a]) => [
+      l,
+      a === "${}" ? n : typeof a == "string" ? a.replaceAll("${}", () => n) : a
+    ])
+  )), t;
+}, b = ({ inSpecJson: e, inData: o, inRowIndex: t, inShowLog: n = !1 } = {}) => {
+  const l = e, a = o, r = n, s = structuredClone(l);
+  return r && console.log("buildSingleElement start : ", l, a), typeof a == "string" ? G({ inSpec: s, inData: a }) : typeof a == "object" && a !== null && "key" in a && "value" in a && !("children" in s && Array.isArray(s.children) && s.children.length > 0) ? z({ inSpec: s, inData: a }) : R({
+    inSpec: s,
+    inData: a,
+    inShowLog: r
+  });
+}, Q = ({ inTemplate: e, inDataAsArray: o }) => {
+  const t = o, n = e;
+  return Array.isArray(t) ? t.map((a, r) => {
+    const s = structuredClone(n);
+    return p({
+      inSpecJson: s,
+      inDataJson: a,
+      inRowIndex: r
+    });
+  }) : [];
+}, U = ({ inTemplate: e, inDataAsObject: o }) => {
+  const t = o, n = e;
+  if (t === null || typeof t != "object")
+    return [];
+  const l = [];
+  for (const [a, r] of Object.entries(t)) {
+    const s = structuredClone(n), i = p({
+      inSpecJson: s,
+      inDataJson: {
+        key: a,
+        value: r
+      }
+    });
+    l.push(i);
   }
-}, w = ({
-  inNode: n,
-  inData: e = {},
-  inOperation: t
+  return l;
+}, _ = ({
+  inSpecJson: e,
+  inShowLog: o = !1,
+  inDataJson: t,
+  inRowIndex: n
 } = {}) => {
-  const o = n, l = t;
-  if (o == null)
-    return o;
-  if (Array.isArray(o))
+  if (Number.isFinite(n) && ("attributes" in e ? e.attributes.rowIndex = n : e.attributes = {
+    rowIndex: n
+  }), !["loopArray", "loopObject"].includes(e.jsonToSpec.operation)) {
+    console.log(`inSpecJson.jsonToSpec.operation : can be loopArray or loopObject : ${e.jsonToSpec.operation}`);
+    return;
+  }
+  if (e.jsonToSpec.operation === "loopArray") {
+    const l = Q({
+      inTemplate: e.jsonToSpec.template,
+      inDataAsArray: t[e.jsonToSpec.source]
+    }), {
+      jsonToSpec: a,
+      ...r
+    } = e, s = {
+      ...r,
+      children: l
+    };
     return b({
-      inNode: o,
-      inData: e,
-      inOperation: l
+      inSpecJson: s,
+      inShowLog: o,
+      inData: t
     });
-  if ("children" in o && Array.isArray(o == null ? void 0 : o.children) && (o.children = b({
-    inNode: o == null ? void 0 : o.children,
-    inData: e,
-    inOperation: l
-  })), typeof o != "object")
-    return o;
-  switch (l) {
-    case "replace":
-      typeof o == "object" && R({
-        inNode: o,
-        inData: e
-      });
-      break;
-    case "iterateDo":
-      q({
-        inNode: o,
-        inData: e
-      });
   }
-  return o;
-}, C = ({ inStructureAsJson: n, inDataAsJson: e, inOperation: t }) => {
-  try {
-    return w({
-      inNode: n,
-      inData: e,
-      inOperation: t
+  if (e.jsonToSpec.operation === "loopObject") {
+    const l = U({
+      inTemplate: e.jsonToSpec.template,
+      inDataAsObject: t
+    }), {
+      jsonToSpec: a,
+      ...r
+    } = e, s = {
+      ...r,
+      children: l
+    };
+    return b({
+      inSpecJson: s,
+      inShowLog: o,
+      inData: t
     });
-  } catch (o) {
-    throw console.error("[json-to-spec/v17] replace error:", o), o;
   }
-}, z = {
-  name: "json-to-spec/v18"
-}, h = (n, e = {}, t = !1) => {
-  let o = n, l = e;
-  t && console.log(z.name, o, l);
+}, p = ({
+  inSpecJson: e,
+  inShowLog: o = !0,
+  inDataJson: t,
+  inRowIndex: n
+} = {}) => q({ inSpec: e }) ? null : F({ inSpec: e }) ? e : (o && console.log("dispatchSpec 3 : ", e, t), D({ inSpecJson: e }) ? K({
+  inArray: e,
+  inShowLog: o,
+  inDataJson: t
+}) : "jsonToSpec" in e ? _({
+  inSpecJson: e,
+  inShowLog: o,
+  inDataJson: t,
+  inRowIndex: n
+}) : b({
+  inSpecJson: e,
+  inShowLog: o,
+  inRowIndex: n,
+  inData: t
+})), x = ({
+  specJson: e,
+  showLog: o = !1,
+  dataJson: t
+}) => {
   try {
-    const a = C({
-      inStructureAsJson: o,
-      inDataAsJson: l,
-      inOperation: "iterateDo"
-    }), s = C({
-      inStructureAsJson: a,
-      inDataAsJson: l,
-      inOperation: "replace"
+    return o && console.log("jsonToSpec 1 : ", e), p({
+      inSpecJson: e,
+      inShowLog: o,
+      inDataJson: t
     });
-    return console.log("iteratedData : ", a, s), s;
-  } catch (a) {
-    throw console.error("[json-to-spec/v17] compile error:", a), a;
+  } catch (n) {
+    console.log("error : ", n);
   }
 };
-P(h);
-const F = {
+M(x);
+const J = {
   version: "v31.0",
   description: "Pure DOM engine (v31)"
-}, W = (n) => {
-  typeof globalThis > "u" || !n || (globalThis.ks ?? (globalThis.ks = {}), globalThis.ks["json-to-dom"] = {
-    meta: F,
-    buildSpecElement: n
+}, X = (e) => {
+  typeof globalThis > "u" || !e || (globalThis.ks ?? (globalThis.ks = {}), globalThis.ks["json-to-dom"] = {
+    meta: J,
+    buildSpecElement: e
   });
-}, G = "./tags.schema.json", Q = {
+}, Y = "./tags.schema.json", Z = {
   allowsTextContent: !1,
   allowsChildren: !0,
   allowedAttributes: [
@@ -308,7 +364,7 @@ const F = {
     "role"
   ],
   childTags: []
-}, U = {
+}, tt = {
   allowsTextContent: !1,
   allowsChildren: !1,
   allowedAttributes: [
@@ -321,7 +377,7 @@ const F = {
     "required",
     "list"
   ]
-}, _ = {
+}, et = {
   allowsTextContent: !1,
   allowsChildren: !1,
   allowedAttributes: [
@@ -332,14 +388,14 @@ const F = {
     "disabled",
     "required"
   ]
-}, X = {
+}, ot = {
   allowsTextContent: !0,
   allowsChildren: !0,
   allowedAttributes: [
     "for"
   ],
   childTags: []
-}, Y = {
+}, nt = {
   allowsTextContent: !1,
   allowsChildren: !0,
   allowedAttributes: [
@@ -352,7 +408,7 @@ const F = {
     "target"
   ],
   childTags: []
-}, Z = {
+}, lt = {
   allowsTextContent: !1,
   allowsChildren: !0,
   allowedAttributes: [
@@ -365,27 +421,27 @@ const F = {
   childTags: [
     "option"
   ]
-}, tt = {
+}, at = {
   allowsTextContent: !0,
   allowsChildren: !0,
   allowedAttributes: [],
   childTags: []
-}, et = {
+}, st = {
   allowsTextContent: !0,
   allowsChildren: !0,
   allowedAttributes: [],
   childTags: []
-}, ot = {
+}, rt = {
   allowsTextContent: !0,
   allowsChildren: !0,
   allowedAttributes: [],
   childTags: []
-}, nt = {
+}, it = {
   allowsTextContent: !0,
   allowsChildren: !0,
   allowedAttributes: [],
   childTags: []
-}, lt = {
+}, ct = {
   allowsTextContent: !1,
   allowsChildren: !1,
   allowedAttributes: [
@@ -395,7 +451,7 @@ const F = {
     "height",
     "loading"
   ]
-}, at = {
+}, ut = {
   allowsTextContent: !0,
   allowsChildren: !0,
   allowedAttributes: [
@@ -405,7 +461,7 @@ const F = {
     "value"
   ],
   childTags: []
-}, st = {
+}, dt = {
   allowsTextContent: !1,
   allowsChildren: !0,
   allowedAttributes: [
@@ -421,28 +477,28 @@ const F = {
     "tfoot",
     "tr"
   ]
-}, rt = {
+}, pt = {
   allowsTextContent: !1,
   allowsChildren: !0,
   allowedAttributes: [],
   childTags: [
     "tr"
   ]
-}, it = {
+}, ft = {
   allowsTextContent: !1,
   allowsChildren: !0,
   allowedAttributes: [],
   childTags: [
     "tr"
   ]
-}, ct = {
+}, ht = {
   allowsTextContent: !1,
   allowsChildren: !0,
   allowedAttributes: [],
   childTags: [
     "tr"
   ]
-}, dt = {
+}, gt = {
   allowsTextContent: !1,
   allowsChildren: !0,
   allowedAttributes: [],
@@ -450,7 +506,7 @@ const F = {
     "td",
     "th"
   ]
-}, ut = {
+}, bt = {
   allowsTextContent: !0,
   allowsChildren: !0,
   allowedAttributes: [
@@ -459,7 +515,7 @@ const F = {
     "rowspan"
   ],
   childTags: []
-}, pt = {
+}, mt = {
   allowsTextContent: !0,
   allowsChildren: !0,
   allowedAttributes: [
@@ -467,14 +523,14 @@ const F = {
     "rowspan"
   ],
   childTags: []
-}, ft = {
+}, yt = {
   allowsTextContent: !1,
   allowsChildren: !0,
   allowedAttributes: [],
   childTags: [
     "option"
   ]
-}, ht = {
+}, wt = {
   allowsTextContent: !0,
   allowsChildren: !1,
   allowedAttributes: [
@@ -483,30 +539,30 @@ const F = {
     "selected",
     "disabled"
   ]
-}, gt = {
-  $schema: G,
-  div: Q,
-  input: U,
-  checkbox: _,
-  label: X,
-  form: Y,
-  select: Z,
-  p: tt,
-  h1: et,
-  h2: ot,
-  span: nt,
-  img: lt,
-  button: at,
-  table: st,
-  thead: rt,
-  tbody: it,
-  tfoot: ct,
-  tr: dt,
-  th: ut,
-  td: pt,
-  datalist: ft,
-  option: ht
-}, wt = [
+}, Ct = {
+  $schema: Y,
+  div: Z,
+  input: tt,
+  checkbox: et,
+  label: ot,
+  form: nt,
+  select: lt,
+  p: at,
+  h1: st,
+  h2: rt,
+  span: it,
+  img: ct,
+  button: ut,
+  table: dt,
+  thead: pt,
+  tbody: ft,
+  tfoot: ht,
+  tr: gt,
+  th: bt,
+  td: mt,
+  datalist: yt,
+  option: wt
+}, Tt = [
   "accesskey",
   "autocapitalize",
   "autofocus",
@@ -536,174 +592,174 @@ const F = {
   "tabindex",
   "title",
   "translate"
-], mt = [
+], At = [
   "data-",
   "aria-"
-], T = {
-  attributes: wt,
-  wildcardPrefixes: mt
-}, g = ({ inSpec: n, spec: e } = {}) => {
-  var r;
-  const t = n ?? e, o = [], l = [];
+], S = {
+  attributes: Tt,
+  wildcardPrefixes: At
+}, m = ({ inSpec: e, spec: o } = {}) => {
+  var s;
+  const t = e ?? o, n = [], l = [];
   if (!t || typeof t != "object")
-    return o.push("Spec must be a non-null object"), { isValid: !1, errors: o, warnings: l };
+    return n.push("Spec must be a non-null object"), { isValid: !1, errors: n, warnings: l };
   if (Array.isArray(t))
     return t.forEach((i, c) => {
-      const d = g({ inSpec: i });
-      d.isValid || o.push(...d.errors.map((u) => `[${c}] ${u}`)), l.push(...d.warnings.map((u) => `[${c}] ${u}`));
-    }), { isValid: o.length === 0, errors: o, warnings: l };
-  const a = (r = t.tagName) == null ? void 0 : r.toLowerCase();
+      const u = m({ inSpec: i });
+      u.isValid || n.push(...u.errors.map((d) => `[${c}] ${d}`)), l.push(...u.warnings.map((d) => `[${c}] ${d}`));
+    }), { isValid: n.length === 0, errors: n, warnings: l };
+  const a = (s = t.tagName) == null ? void 0 : s.toLowerCase();
   if (!a || typeof a != "string")
-    return o.push("Missing or invalid 'tagName'"), { isValid: !1, errors: o, warnings: l };
-  const s = gt[a];
-  if (!s)
+    return n.push("Missing or invalid 'tagName'"), { isValid: !1, errors: n, warnings: l };
+  const r = Ct[a];
+  if (!r)
     l.push(`Tag '<${a}>' is not recognized in tags.json`);
-  else if (s.allowsChildren === !1 && Array.isArray(t.children) && t.children.length > 0 && o.push(`Void tag '<${a}>' cannot have children`), s.allowsTextContent === !1 && t.textContent && l.push(`Tag '<${a}>' does not normally allow direct textContent`), t.attributes && typeof t.attributes == "object") {
+  else if (r.allowsChildren === !1 && Array.isArray(t.children) && t.children.length > 0 && n.push(`Void tag '<${a}>' cannot have children`), r.allowsTextContent === !1 && t.textContent && l.push(`Tag '<${a}>' does not normally allow direct textContent`), t.attributes && typeof t.attributes == "object") {
     const i = /* @__PURE__ */ new Set([
-      ...T.attributes || [],
-      ...s.allowedAttributes || []
-    ]), c = T.wildcardPrefixes || [];
-    for (const d of Object.keys(t.attributes)) {
-      const u = c.some((f) => d.startsWith(f));
-      !i.has(d) && !u && l.push(`Attribute '${d}' is not recognized on '<${a}>'`);
+      ...S.attributes || [],
+      ...r.allowedAttributes || []
+    ]), c = S.wildcardPrefixes || [];
+    for (const u of Object.keys(t.attributes)) {
+      const d = c.some((g) => u.startsWith(g));
+      !i.has(u) && !d && l.push(`Attribute '${u}' is not recognized on '<${a}>'`);
     }
   }
   return Array.isArray(t.children) && t.children.forEach((i, c) => {
-    const d = g({ inSpec: i });
-    d.isValid || o.push(...d.errors.map((u) => `<${a}>.children[${c}]: ${u}`)), l.push(...d.warnings.map((u) => `<${a}>.children[${c}]: ${u}`));
+    const u = m({ inSpec: i });
+    u.isValid || n.push(...u.errors.map((d) => `<${a}>.children[${c}]: ${d}`)), l.push(...u.warnings.map((d) => `<${a}>.children[${c}]: ${d}`));
   }), {
-    isValid: o.length === 0,
-    errors: o,
+    isValid: n.length === 0,
+    errors: n,
     warnings: l
   };
-}, yt = (n) => {
-  var s;
-  const e = n, t = e && typeof e == "object" && !Array.isArray(e) && ("spec" in e || "inSpec" in e), o = t ? e.inSpec ?? e.spec : e, l = t ? !!(e.inValidate ?? e.validate ?? e.debug) : !1, a = t ? !!(e.inShowLog ?? e.showLog) : !1;
-  if (l && o) {
-    const r = g({ inSpec: o });
-    return r.isValid ? ((s = r.warnings) == null ? void 0 : s.length) > 0 && a && console.warn("[json-to-dom: validation warning]", r.warnings) : console.warn("[json-to-dom: validation error]", r.errors, r), r;
+}, St = (e) => {
+  var r;
+  const o = e, t = o && typeof o == "object" && !Array.isArray(o) && ("spec" in o || "inSpec" in o), n = t ? o.inSpec ?? o.spec : o, l = t ? !!(o.inValidate ?? o.validate ?? o.debug) : !1, a = t ? !!(o.inShowLog ?? o.showLog) : !1;
+  if (l && n) {
+    const s = m({ inSpec: n });
+    return s.isValid ? ((r = s.warnings) == null ? void 0 : r.length) > 0 && a && console.warn("[json-to-dom: validation warning]", s.warnings) : console.warn("[json-to-dom: validation error]", s.errors, s), s;
   }
   return { isValid: !0 };
-}, bt = ({ inSpec: n }) => {
-  const e = n;
-  return e == null;
-}, Ct = ({ inSpec: n }) => typeof Node < "u" && n instanceof Node, Tt = ({ inSpec: n }) => {
-  const e = n;
-  return Array.isArray(e);
-}, At = ({ inSpec: n }) => {
-  const e = n;
-  return typeof e == "object" && e !== null && !Array.isArray(e);
-}, Dt = ({ inSpec: n, inShowLog: e = !1 }) => {
-  const t = n, o = e;
-  return Array.isArray(t) ? t.map((l) => m({
+}, Dt = ({ inSpec: e }) => {
+  const o = e;
+  return o == null;
+}, xt = ({ inSpec: e }) => typeof Node < "u" && e instanceof Node, jt = ({ inSpec: e }) => {
+  const o = e;
+  return Array.isArray(o);
+}, vt = ({ inSpec: e }) => {
+  const o = e;
+  return typeof o == "object" && o !== null && !Array.isArray(o);
+}, $t = ({ inSpec: e, inShowLog: o = !1 }) => {
+  const t = e, n = o;
+  return Array.isArray(t) ? t.map((l) => y({
     inSpec: l,
-    inShowLog: o
+    inShowLog: n
   })).flat().filter(Boolean) : [];
-}, St = ({ inTagName: n }) => {
-  const e = n == null ? void 0 : n.toLowerCase();
-  if (!e) return null;
-  if (e === "checkbox") {
+}, Nt = ({ inTagName: e }) => {
+  const o = e == null ? void 0 : e.toLowerCase();
+  if (!o) return null;
+  if (o === "checkbox") {
     const t = document.createElement("input");
     return t.type = "checkbox", t;
   }
-  return document.createElement(e);
-}, xt = ({ inElement: n, inTextContent: e, inAllowsTextContent: t = !0, inTagName: o, inShowLog: l = !1 }) => {
-  const a = n, s = e, r = t, i = o, c = l;
-  return !a || s === void 0 || s === null ? a : r ? (a.textContent = s, a) : (c && console.warn(`[json-to-dom v11] textContent is not allowed on <${i}>; discarded "${s}"`), a);
-}, $t = ({ inElement: n, inProperties: e }) => {
-  const t = n, o = e;
-  return t && o && typeof o == "object" && Object.assign(t, o), t;
-}, Nt = ({ inElement: n, inAttributes: e }) => {
-  const t = n, o = e;
-  return !t || !o || typeof o != "object" || Object.entries(o).forEach(([l, a]) => {
+  return document.createElement(o);
+}, Lt = ({ inElement: e, inTextContent: o, inAllowsTextContent: t = !0, inTagName: n, inShowLog: l = !1 }) => {
+  const a = e, r = o, s = t, i = n, c = l;
+  return !a || r === void 0 || r === null ? a : s ? (a.textContent = r, a) : (c && console.warn(`[json-to-dom v11] textContent is not allowed on <${i}>; discarded "${r}"`), a);
+}, Et = ({ inElement: e, inProperties: o }) => {
+  const t = e, n = o;
+  return t && n && typeof n == "object" && Object.assign(t, n), t;
+}, kt = ({ inElement: e, inAttributes: o }) => {
+  const t = e, n = o;
+  return !t || !n || typeof n != "object" || Object.entries(n).forEach(([l, a]) => {
     l === "class" ? t.className = a : typeof a == "boolean" ? a ? t.setAttribute(l, "") : t.removeAttribute(l) : a != null && t.setAttribute(l, String(a));
   }), t;
-}, vt = ({ inElement: n, inClassList: e }) => {
-  const t = n, o = e;
-  if (!t || !o) return t;
+}, Ot = ({ inElement: e, inClassList: o }) => {
+  const t = e, n = o;
+  if (!t || !n) return t;
   let l = [];
-  return typeof o == "string" ? l = o.split(/\s+/).filter(Boolean) : Array.isArray(o) && (l = o.filter((a) => typeof a == "string" && a.trim().length > 0)), l.length > 0 && t.classList.add(...l), t;
-}, jt = ({ inElement: n, inChildren: e, inAllowsChildren: t = !0, inTagName: o, inShowLog: l = !1 }) => {
-  const a = n, s = e, r = t, i = o, c = l;
-  return !a || !Array.isArray(s) || s.length === 0 ? a : r ? (s.forEach((d) => {
-    typeof Node < "u" && d instanceof Node ? a.appendChild(d) : (typeof d == "string" || typeof d == "number") && a.appendChild(document.createTextNode(String(d)));
-  }), a) : (c && console.warn(`[json-to-dom v11] Children are not allowed on void tag <${i}>; discarded ${s.length} child nodes.`), a);
-}, Lt = ({ inSpec: n, inClassList: e }) => {
-  const t = n, o = e || (t == null ? void 0 : t.classList);
+  return typeof n == "string" ? l = n.split(/\s+/).filter(Boolean) : Array.isArray(n) && (l = n.filter((a) => typeof a == "string" && a.trim().length > 0)), l.length > 0 && t.classList.add(...l), t;
+}, Vt = ({ inElement: e, inChildren: o, inAllowsChildren: t = !0, inTagName: n, inShowLog: l = !1 }) => {
+  const a = e, r = o, s = t, i = n, c = l;
+  return !a || !Array.isArray(r) || r.length === 0 ? a : s ? (r.forEach((u) => {
+    typeof Node < "u" && u instanceof Node ? a.appendChild(u) : (typeof u == "string" || typeof u == "number") && a.appendChild(document.createTextNode(String(u)));
+  }), a) : (c && console.warn(`[json-to-dom v11] Children are not allowed on void tag <${i}>; discarded ${r.length} child nodes.`), a);
+}, Bt = ({ inSpec: e, inClassList: o }) => {
+  const t = e, n = o || (t == null ? void 0 : t.classList);
   if (!t || !t.tagName) return null;
-  const l = St({ inTagName: t.tagName });
-  return l ? (xt({
+  const l = Nt({ inTagName: t.tagName });
+  return l ? (Lt({
     inElement: l,
     inTextContent: t.textContent,
     inTagName: t.tagName
-  }), $t({
+  }), Et({
     inElement: l,
     inProperties: t.properties
-  }), Nt({
+  }), kt({
     inElement: l,
     inAttributes: t.attributes
-  }), vt({
+  }), Ot({
     inElement: l,
-    inClassList: o
-  }), jt({
+    inClassList: n
+  }), Vt({
     inElement: l,
     inChildren: t.children,
     inTagName: t.tagName
   }), l) : null;
-}, kt = ({ inChildren: n, inShowLog: e = !1 }) => {
-  const t = n, o = e;
-  return Array.isArray(t) ? t.map((l) => typeof l == "string" || typeof l == "number" ? typeof document < "u" ? document.createTextNode(String(l)) : String(l) : m({
+}, Pt = ({ inChildren: e, inShowLog: o = !1 }) => {
+  const t = e, n = o;
+  return Array.isArray(t) ? t.map((l) => typeof l == "string" || typeof l == "number" ? typeof document < "u" ? document.createTextNode(String(l)) : String(l) : y({
     inSpec: l,
-    inShowLog: o
+    inShowLog: n
   })).flat().filter(Boolean) : [];
-}, Et = ({ inSpec: n, inShowLog: e = !1 }) => {
-  const t = n, o = e;
+}, It = ({ inSpec: e, inShowLog: o = !1 }) => {
+  const t = e, n = o;
   if (!(t != null && t.tagName))
-    return o && console.warn("[json-to-dom v23] Missing tagName on spec:", t), null;
-  const l = Array.isArray(t.children) && t.children.length > 0 ? kt({
+    return n && console.warn("[json-to-dom v23] Missing tagName on spec:", t), null;
+  const l = Array.isArray(t.children) && t.children.length > 0 ? Pt({
     inChildren: t.children,
-    inShowLog: o
+    inShowLog: n
   }) : [];
-  return Lt({
+  return Bt({
     inSpec: {
       ...t,
       children: l
     }
   });
-}, m = ({ inSpec: n, inShowLog: e = !1 } = {}) => {
-  const t = n, o = e;
-  return bt({ inSpec: t }) ? null : Ct({ inSpec: t }) ? t : Tt({ inSpec: t }) ? Dt({ inSpec: t, inShowLog: o }) : At({ inSpec: t }) ? Et({ inSpec: t, inShowLog: o }) : null;
-}, Ot = ({ inArgs: n, inSpec: e, inShowLog: t } = {}) => {
+}, y = ({ inSpec: e, inShowLog: o = !1 } = {}) => {
+  const t = e, n = o;
+  return Dt({ inSpec: t }) ? null : xt({ inSpec: t }) ? t : jt({ inSpec: t }) ? $t({ inSpec: t, inShowLog: n }) : vt({ inSpec: t }) ? It({ inSpec: t, inShowLog: n }) : null;
+}, Ht = ({ inArgs: e, inSpec: o, inShowLog: t } = {}) => {
   var i;
-  const o = n, l = e, a = t;
-  let s = l !== void 0 ? l : o, r = !!a;
-  return o && typeof o == "object" && !Array.isArray(o) && !(typeof Node < "u" && o instanceof Node) && ("inSpec" in o ? (s = o.inSpec, r = !!o.inShowLog) : "spec" in o && (s = o.spec, r = !!o.showLog)), typeof globalThis < "u" && ((i = globalThis == null ? void 0 : globalThis.ks) != null && i.showLog) && (r = !0), {
-    spec: s,
-    showLog: r
+  const n = e, l = o, a = t;
+  let r = l !== void 0 ? l : n, s = !!a;
+  return n && typeof n == "object" && !Array.isArray(n) && !(typeof Node < "u" && n instanceof Node) && ("inSpec" in n ? (r = n.inSpec, s = !!n.inShowLog) : "spec" in n && (r = n.spec, s = !!n.showLog)), typeof globalThis < "u" && ((i = globalThis == null ? void 0 : globalThis.ks) != null && i.showLog) && (s = !0), {
+    spec: r,
+    showLog: s
   };
-}, It = (n) => {
-  const e = n, t = e && typeof e == "object" && !Array.isArray(e) && !(typeof Node < "u" && e instanceof Node) && ("spec" in e || "inSpec" in e), o = t ? e.spec ?? e.inSpec : e, l = t ? !!(e.showLog ?? e.inShowLog) : !1, { spec: a } = Ot({ inSpec: o, inShowLog: l });
-  return m({ inSpec: a, inShowLog: l });
-}, Vt = ({ element: n, targetHtmlId: e } = {}) => {
-  const t = n, o = e;
-  if (!o || typeof document > "u") return;
-  const l = document.getElementById(o);
+}, Mt = (e) => {
+  const o = e, t = o && typeof o == "object" && !Array.isArray(o) && !(typeof Node < "u" && o instanceof Node) && ("spec" in o || "inSpec" in o), n = t ? o.spec ?? o.inSpec : o, l = t ? !!(o.showLog ?? o.inShowLog) : !1, { spec: a } = Ht({ inSpec: n, inShowLog: l });
+  return y({ inSpec: a, inShowLog: l });
+}, qt = ({ element: e, targetHtmlId: o } = {}) => {
+  const t = e, n = o;
+  if (!n || typeof document > "u") return;
+  const l = document.getElementById(n);
   l && (l.innerHTML = "", Array.isArray(t) ? t.forEach((a) => {
     a instanceof Node && l.appendChild(a);
   }) : t instanceof Node && l.appendChild(t));
-}, Bt = (n = {}) => {
-  const e = n, t = e.element, o = e.targetHtmlId;
-  return o && typeof document < "u" && Vt({ element: t, targetHtmlId: o }), t;
-}, D = (n) => {
-  yt(n);
-  const e = It(n), t = (n == null ? void 0 : n.targetHtmlId) ?? (n == null ? void 0 : n.domIdToPushTo) ?? (n == null ? void 0 : n.inDomIdToPushTo);
-  return Bt({ element: e, targetHtmlId: t });
+}, Ft = (e = {}) => {
+  const o = e, t = o.element, n = o.targetHtmlId;
+  return n && typeof document < "u" && qt({ element: t, targetHtmlId: n }), t;
+}, j = (e) => {
+  St(e);
+  const o = Mt(e), t = (e == null ? void 0 : e.targetHtmlId) ?? (e == null ? void 0 : e.domIdToPushTo) ?? (e == null ? void 0 : e.inDomIdToPushTo);
+  return Ft({ element: o, targetHtmlId: t });
 };
-W(D);
-const Jt = "datalist", Pt = {
+X(j);
+const Kt = "datalist", Wt = {
   id: "dl1"
-}, Mt = {
-  operation: "iterate",
+}, Rt = {
+  operation: "loopArray",
   source: "data",
   template: {
     tagName: "option",
@@ -712,60 +768,62 @@ const Jt = "datalist", Pt = {
     },
     textContent: "${}"
   }
-}, Kt = [], Rt = {
-  tagName: Jt,
-  attributes: Pt,
-  jsonToSpec: Mt,
-  children: Kt
-}, Ht = ({ inDataList: n } = {}) => {
-  const e = n.store.library.distinctData, t = [];
-  for (const [a, s] of Object.entries(e)) {
-    const r = structuredClone(Rt);
-    r.attributes.id = a, r.jsonToSpec.source = a, t.push(r);
+}, zt = [], Gt = {
+  tagName: Kt,
+  attributes: Wt,
+  jsonToSpec: Rt,
+  children: zt
+}, Qt = ({ inDataList: e } = {}) => {
+  const t = e.store.library.distinctData, n = [];
+  for (const [a, r] of Object.entries(t)) {
+    const s = structuredClone(Gt);
+    s.attributes.id = a, s.jsonToSpec.source = a, n.push(s);
   }
   return {
-    buildSpec: () => window.ks["json-to-spec"].compile(t, e, !0),
-    renderStructure: ({ inContainerId: a, inContainer: s, targetContainerId: r } = {}) => {
-      const i = h(t, e, !0);
-      return console.log("specAsJsonToDom--------: ", h, i), D({ spec: i, targetHtmlId: "datalist-container" }), i;
+    renderStructure: ({ targetContainerId: a } = {}) => {
+      const r = x({
+        specJson: n,
+        dataJson: t
+      });
+      return j({ spec: r, targetHtmlId: a }), r;
     }
   };
-}, qt = async ({ inDataList: n, inQuery: e = {} } = {}) => {
-  const t = n, o = e;
+}, Ut = async ({ inDataList: e, inQuery: o = {} } = {}) => {
+  const t = e, n = o;
   if (!t) return null;
   if (typeof t.dataProvider == "function")
     try {
-      const l = await t.dataProvider(o);
+      const l = await t.dataProvider(n);
       Array.isArray(l) && (t.store.updateData({ inData: l }), t.renderStructure());
     } catch (l) {
       console.error("[json-to-dom-datalist:actions:load] Error loading data:", l);
     }
   return t.store.stateData;
-}, zt = ({ inDataList: n, inData: e = [] } = {}) => {
-  const t = n, o = e;
-  return t ? (t.store.updateData({ inData: o }), t.renderStructure()) : null;
-}, Ft = ({ inDataList: n } = {}) => {
-  const e = n;
+}, _t = ({ inDataList: e, inData: o = [] } = {}) => {
+  const t = e, n = o;
+  return t ? (t.store.updateData({ inData: n }), t.renderStructure()) : null;
+}, Jt = ({ inDataList: e } = {}) => {
+  const o = e;
   return {
-    load: async ({ inQuery: l, query: a } = {}) => await qt({ inDataList: e, inQuery: l ?? a ?? {} }),
-    update: ({ inData: l, data: a } = {}) => zt({ inDataList: e, inData: l ?? a ?? [] })
+    load: async ({ inQuery: l, query: a } = {}) => await Ut({ inDataList: o, inQuery: l ?? a ?? {} }),
+    update: ({ inData: l, data: a } = {}) => _t({ inDataList: o, inData: l ?? a ?? [] })
   };
-}, S = ({ inData: n = [], inKey: e = "", inTopN: t = 0 } = {}) => {
-  const o = n, l = e, a = t;
-  if (!Array.isArray(o) || !l)
+}, v = ({ inData: e = [], inKey: o = "", inTopN: t = 0 } = {}) => {
+  const n = e, l = o, a = t;
+  if (!Array.isArray(n) || !l)
     return [];
-  const s = /* @__PURE__ */ new Map();
-  for (const i of o) {
+  const r = /* @__PURE__ */ new Map();
+  for (const i of n) {
     if (!i || typeof i != "object") continue;
     const c = i[l];
     if (c != null) {
-      const d = String(c).trim();
-      d !== "" && s.set(d, (s.get(d) || 0) + 1);
+      const u = String(c).trim();
+      u !== "" && r.set(u, (r.get(u) || 0) + 1);
     }
   }
-  const r = Array.from(s.entries()).map(([i, c]) => ({ value: i, count: c })).sort((i, c) => i.value.localeCompare(c.value, void 0, { sensitivity: "base", numeric: !0 }));
-  return a > 0 && Number.isFinite(a) ? r.slice(0, a) : r;
-}, Wt = {
+  const s = Array.from(r.entries()).map(([i, c]) => ({ value: i, count: c })).sort((i, c) => i.value.localeCompare(c.value, void 0, { sensitivity: "base", numeric: !0 }));
+  return a > 0 && Number.isFinite(a) ? s.slice(0, a) : s;
+}, Xt = {
   allowsTextContent: !1,
   allowsChildren: !0,
   allowedAttributes: [
@@ -773,7 +831,7 @@ const Jt = "datalist", Pt = {
     "role"
   ],
   childTags: []
-}, Gt = {
+}, Yt = {
   allowsTextContent: !1,
   allowsChildren: !1,
   allowedAttributes: [
@@ -786,7 +844,7 @@ const Jt = "datalist", Pt = {
     "required",
     "list"
   ]
-}, Qt = {
+}, Zt = {
   allowsTextContent: !1,
   allowsChildren: !1,
   allowedAttributes: [
@@ -797,14 +855,14 @@ const Jt = "datalist", Pt = {
     "disabled",
     "required"
   ]
-}, Ut = {
+}, te = {
   allowsTextContent: !0,
   allowsChildren: !0,
   allowedAttributes: [
     "for"
   ],
   childTags: []
-}, _t = {
+}, ee = {
   allowsTextContent: !0,
   allowsChildren: !0,
   allowedAttributes: [
@@ -814,7 +872,7 @@ const Jt = "datalist", Pt = {
     "value"
   ],
   childTags: []
-}, Xt = {
+}, oe = {
   allowsTextContent: !1,
   allowsChildren: !0,
   allowedAttributes: [
@@ -830,28 +888,28 @@ const Jt = "datalist", Pt = {
     "tfoot",
     "tr"
   ]
-}, Yt = {
+}, ne = {
   allowsTextContent: !1,
   allowsChildren: !0,
   allowedAttributes: [],
   childTags: [
     "tr"
   ]
-}, Zt = {
+}, le = {
   allowsTextContent: !1,
   allowsChildren: !0,
   allowedAttributes: [],
   childTags: [
     "tr"
   ]
-}, te = {
+}, ae = {
   allowsTextContent: !1,
   allowsChildren: !0,
   allowedAttributes: [],
   childTags: [
     "tr"
   ]
-}, ee = {
+}, se = {
   allowsTextContent: !1,
   allowsChildren: !0,
   allowedAttributes: [],
@@ -859,7 +917,7 @@ const Jt = "datalist", Pt = {
     "td",
     "th"
   ]
-}, oe = {
+}, re = {
   allowsTextContent: !0,
   allowsChildren: !0,
   allowedAttributes: [
@@ -868,7 +926,7 @@ const Jt = "datalist", Pt = {
     "rowspan"
   ],
   childTags: []
-}, ne = {
+}, ie = {
   allowsTextContent: !0,
   allowsChildren: !0,
   allowedAttributes: [
@@ -876,14 +934,14 @@ const Jt = "datalist", Pt = {
     "rowspan"
   ],
   childTags: []
-}, le = {
+}, ce = {
   allowsTextContent: !1,
   allowsChildren: !0,
   allowedAttributes: [],
   childTags: [
     "option"
   ]
-}, ae = {
+}, ue = {
   allowsTextContent: !0,
   allowsChildren: !1,
   allowedAttributes: [
@@ -892,58 +950,55 @@ const Jt = "datalist", Pt = {
     "selected",
     "disabled"
   ]
-}, se = {
-  div: Wt,
-  input: Gt,
-  checkbox: Qt,
-  label: Ut,
-  button: _t,
-  table: Xt,
-  thead: Yt,
-  tbody: Zt,
-  tfoot: te,
-  tr: ee,
-  th: oe,
-  td: ne,
-  datalist: le,
-  option: ae
+}, de = {
+  div: Xt,
+  input: Yt,
+  checkbox: Zt,
+  label: te,
+  button: ee,
+  table: oe,
+  thead: ne,
+  tbody: le,
+  tfoot: ae,
+  tr: se,
+  th: re,
+  td: ie,
+  datalist: ce,
+  option: ue
 };
-class p {
+class h {
   constructor({
-    data: e = [],
+    data: o = [],
     columns: t = [],
-    config: o = {},
+    config: n = {},
     dataProvider: l = null,
     targetContainerId: a = "datalist-container",
-    inColumns: s,
-    inConfig: r,
+    inColumns: r,
+    inConfig: s,
     inDataProvider: i,
     inTargetContainerId: c
   } = {}) {
-    const d = e, u = s ?? t, f = r ?? o, x = i ?? l, $ = c ?? a;
-    this.containerId = $, this.dataProvider = x, this.element = null, this.controlsTree = null, this.tags = se, this.store = new B({
-      inData: d,
-      inColumns: u,
-      inConfig: f
-    }), this.methods = Ht({ inDataList: this }), this.actions = Ft({ inDataList: this }), this.spec = this.buildSpec();
+    const u = o, d = r ?? t, g = s ?? n, $ = i ?? l, N = c ?? a;
+    this.containerId = N, this.dataProvider = $, this.element = null, this.controlsTree = null, this.tags = de, this.store = new H({
+      inData: u,
+      inColumns: d,
+      inConfig: g
+    }), this.methods = Qt({ inDataList: this }), this.actions = Jt({ inDataList: this });
   }
-  buildSpec() {
-    return this.methods.buildSpec();
+  render(o = {}) {
+    return this.methods.renderStructure(o);
   }
-  render(e = {}) {
-    return this.methods.renderStructure(e);
+  async load(o = {}) {
+    return await this.actions.load(o);
   }
-  async load(e = {}) {
-    return await this.actions.load(e);
+  update(o = {}) {
+    return this.actions.update(o);
   }
-  update(e = {}) {
-    return this.actions.update(e);
-  }
-  getGroupedData({ inKey: e = "", inTopN: t } = {}) {
-    const o = e, l = t ?? this.store.topN ?? 0;
-    return S({
+  getGroupedData({ inKey: o = "", inTopN: t } = {}) {
+    const n = o, l = t ?? this.store.topN ?? 0;
+    return v({
       inData: this.store.stateData,
-      inKey: o,
+      inKey: n,
       inTopN: l
     });
   }
@@ -960,11 +1015,11 @@ class p {
     return this.store.config;
   }
 }
-p.groupBy = S;
-p.layouts = [];
-p.themes = [];
-v(p);
+h.groupBy = v;
+h.layouts = [];
+h.themes = [];
+L(h);
 export {
-  p as DataList,
-  p as default
+  h as DataList,
+  h as default
 };

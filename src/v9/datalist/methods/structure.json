@@ -4,7 +4,7 @@
             "id": "dl1"
         },
         "jsonToSpec": {
-            "operation": "iterate",
+            "operation": "loopArray",
             "source": "data",
             "template": {
                 "tagName": "option",

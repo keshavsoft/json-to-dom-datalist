@@ -36,16 +36,11 @@ class DataList {
 
         this.methods = createMethods({ inDataList: this });
         this.actions = createActions({ inDataList: this });
-        this.spec = this.buildSpec();
     };
-
-    buildSpec() {
-        return this.methods.buildSpec();
-    }
 
     render(args = {}) {
         return this.methods.renderStructure(args);
-    }
+    };
 
     async load(args = {}) {
         return await this.actions.load(args);
@@ -81,7 +76,7 @@ class DataList {
     get config() {
         return this.store.config;
     }
-}
+};
 
 DataList.groupBy = groupBy;
 DataList.layouts = [];
